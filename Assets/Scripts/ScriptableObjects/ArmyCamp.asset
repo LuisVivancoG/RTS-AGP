@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ef791774c67c5f4aa68aee28ca483c9, type: 3}
+  m_Name: ArmyCamp
+  m_EditorClassIdentifier: 
+  _maxHp: 3c0000005000000096000000
+  _armor: 30
+  _buildingGhostPrefab: {fileID: 0}
+  _buildingPlacedPrefab: {fileID: 0}
+  _buildingSprite: {fileID: 0}
+  _kindOfStructure: 3
