@@ -1,6 +1,6 @@
-using Pool;
 using System.Collections.Generic;
 using UnityEngine;
+using Pool;
 
 /// <summary>
 /// This is the controller for placing buildings.
@@ -21,15 +21,15 @@ public class BuildingPlacementManager : MonoBehaviour
 
     private BuildingPool _placedBuildingPool;
 
-    private void Start()
-    {
-        _placedBuildingPool = new BuildingPool();
-    }
+    //private void Start()
+    //{
+    //    _placedBuildingPool = new BuildingPool();
+    //}
 
-    public void GetBuildingFromPool(PlacedBuildingsBase)
-    {
-        buildingToFetch.gameObject.SetActive(true);
-    }
+    //public void GetBuildingFromPool(PlacedBuildingsBase)
+    //{
+    //    buildingToFetch.gameObject.SetActive(true);
+    //}
 
     /// <summary>
     /// Called by the <see cref="BuildingPlacementUI"/>

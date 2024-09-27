@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _maxHp: 640000002c010000f4010000
   _armor: 70
-  _buildingGhostPrefab: {fileID: 0}
-  _buildingPlacedPrefab: {fileID: 0}
-  _buildingSprite: {fileID: 0}
+  _buildingGhostPrefab: {fileID: 7270855514553659466, guid: 24803ca65ed994f2980c69a2c989645e,
+    type: 3}
+  _buildingPlacedPrefab: {fileID: 7270855514553659466, guid: 979a162f01e0e0d40a83092585a6d88e,
+    type: 3}
+  _buildingSprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
   _kindOfStructure: 1
