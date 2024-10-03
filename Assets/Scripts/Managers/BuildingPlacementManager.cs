@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Pool;
+using Unity.VisualScripting;
 
 /// <summary>
 /// This is the controller for placing buildings.
@@ -86,6 +87,11 @@ public class BuildingPlacementManager : MonoBehaviour
                 _buildingToPlace = null;
                 _placementGhost.SetActive(false);
             }
+
+            /*if (hitInfo.Equals(_buildingToPlace) && Input.GetKeyDown(KeyCode.Delete))
+            {
+                _buildingToPlace.GameObject.SetActive(false);
+            }*/
         }
     }
 
@@ -100,5 +106,10 @@ public class BuildingPlacementManager : MonoBehaviour
             GameObject go = Instantiate(_buildingToPlace.BuildingPlacedPrefab, hitInfo.point, _buildingToPlace.BuildingPlacedPrefab.transform.rotation);
         }
     }
+
+    /*private void DismantleBuilding(BuildingData building)
+    {
+        building.GameObject.SetActive(false);
+    }*/
 }
 

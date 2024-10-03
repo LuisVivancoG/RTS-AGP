@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7558132594090469293}
   - component: {fileID: 9161012330370366252}
   m_Layer: 0
-  m_Name: Tank_Ghost
+  m_Name: Farm_Ghost
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

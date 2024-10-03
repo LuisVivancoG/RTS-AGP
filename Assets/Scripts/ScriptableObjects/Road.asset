@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8ef791774c67c5f4aa68aee28ca483c9, type: 3}
-  m_Name: Navigation
+  m_Name: Road
   m_EditorClassIdentifier: 
   _maxHp: 3c0000006e000000aa000000
   _armor: 20
   _buildingGhostPrefab: {fileID: 8656991372640657862, guid: 930fd3361fb4dce4caae6e395a8bc7ce,
     type: 3}
-  _buildingPlacedPrefab: {fileID: 6139552323686764029, guid: 0eb458e813710dc4197cfac338a7696b,
+  _buildingPlacedPrefab: {fileID: 8656991372640657862, guid: a429b5c4c3c290d449b5d3bbdd477cfe,
     type: 3}
   _buildingSprite: {fileID: 10915, guid: 0000000000000000f000000000000000, type: 0}
   _kindOfStructure: 4

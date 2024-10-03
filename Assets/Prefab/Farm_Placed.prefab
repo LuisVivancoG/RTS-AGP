@@ -12,8 +12,9 @@ GameObject:
   - component: {fileID: 5694545290774745959}
   - component: {fileID: 7558132594090469293}
   - component: {fileID: 9161012330370366252}
+  - component: {fileID: 2638541669464013346}
   m_Layer: 0
-  m_Name: Tank_Placed
+  m_Name: Farm_Placed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -108,3 +109,20 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -3837998449387709886, guid: 2c3eb3be511bae84e819b0a3c3232248, type: 3}
+--- !u!114 &2638541669464013346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8350551104437601912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec6abfbe1bd0f44488ac5954f6233079, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ScriptedObjectData: {fileID: 11400000, guid: 82bf75de022940d44a0f1047beb84dbe, type: 2}
+  _foodPerCycle:
+  - 30
+  - 80
+  - 150

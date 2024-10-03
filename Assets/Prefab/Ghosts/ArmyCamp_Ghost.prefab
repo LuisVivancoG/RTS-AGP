@@ -205,7 +205,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2044676094028184155}
   m_Layer: 0
-  m_Name: Locomotive_Ghost
+  m_Name: ArmyCamp_Ghost
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

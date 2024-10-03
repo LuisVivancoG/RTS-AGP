@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ArmyCamp : PlacedBuildingsBase
+public class TownHall : PlacedBuildingsBase
 {
-    [SerializeField] private float _unitsMax;
-    [SerializeField] private float _foodPerCycle;
+    [SerializeField] private int[] _villagersUnitsMax;
+    [SerializeField] private float _baseFoodPerCycle;
+
 }
