@@ -359,3 +359,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BuildingSprite: {fileID: 4850160077554818108}
+  _buildingName: {fileID: 8487099870800434379}

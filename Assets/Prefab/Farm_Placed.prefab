@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 8694424824523496642}
   - component: {fileID: 5694545290774745959}
   - component: {fileID: 7558132594090469293}
-  - component: {fileID: 9161012330370366252}
   - component: {fileID: 2638541669464013346}
-  m_Layer: 0
+  - component: {fileID: 469820527390107914}
+  m_Layer: 7
   m_Name: Farm_Placed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -87,28 +87,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &9161012330370366252
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8350551104437601912}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -3837998449387709886, guid: 2c3eb3be511bae84e819b0a3c3232248, type: 3}
 --- !u!114 &2638541669464013346
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -126,3 +104,24 @@ MonoBehaviour:
   - 30
   - 80
   - 150
+--- !u!65 &469820527390107914
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8350551104437601912}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 5.65704, y: 9.5413685, z: 4.9731293}
+  m_Center: {x: -0.0000011920929, y: 4.7706833, z: -0.0000019073486}

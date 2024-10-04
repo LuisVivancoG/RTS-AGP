@@ -18,5 +18,5 @@ MonoBehaviour:
     type: 3}
   _buildingPlacedPrefab: {fileID: 7072890070839740613, guid: 9f7c036ac5bd4f244a47b6c80942290e,
     type: 3}
-  _buildingSprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  _buildingSprite: {fileID: 21300000, guid: c482482621a99c64aa46d6404a561359, type: 3}
   _kindOfStructure: 5

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 using Pool;
 using Unity.VisualScripting;
 
@@ -10,7 +11,8 @@ using Unity.VisualScripting;
 public class BuildingPlacementManager : MonoBehaviour
 {
     [SerializeField] private AllBuildingsData _allBuildingData;
-    [SerializeField] private LayerMask GroundMask;
+    [SerializeField] private LayerMask _groundMask;
+    [SerializeField] private LayerMask _buildingsMask;
     public AllBuildingsData AllBuildings => _allBuildingData;
 
     private BuildingData _buildingToPlace = null;
@@ -18,9 +20,12 @@ public class BuildingPlacementManager : MonoBehaviour
 
     private Dictionary<string, GameObject> _ghostsObjectsPool = new();
 
-    [SerializeField] private ParticleSystem PlacedParticles;
+    [SerializeField] private ParticleSystem _placedParticles;
 
+    [SerializeField] private GameObject _buildingsGrp;
     private BuildingPool _placedBuildingPool;
+
+    [SerializeField] private UIManager _uiManager; 
 
     //private void Start()
     //{
@@ -47,15 +52,28 @@ public class BuildingPlacementManager : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        if (_buildingToPlace == null)
-            return;
-
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hitInfo, 300, GroundMask))
-        {
-            PlacedParticles.transform.position = hitInfo.point;
-            //Debug.Log(hitInfo.collider.name);
 
+        if (_buildingToPlace == null)
+        {
+            if (Physics.Raycast(ray, out RaycastHit hitBuildingsInfo, 300, _buildingsMask) && Input.GetMouseButtonDown(0))
+            {
+                //var buildingClicked = hitBuildingsInfo.transform.GetComponent<PlacedBuildingsBase>();
+                //_uiManager.OptionsEnable(buildingClicked);
+                //BuildingOptions(buildingClicked);
+
+                if (BuildingOptions(ray))
+                {
+                    return;
+                }
+            }
+
+            return;
+        }
+
+
+        if (Physics.Raycast(ray, out RaycastHit hitInfo, 300, _groundMask))
+        {
             if (_placementGhost != null)
             {
                 _placementGhost.SetActive(false);
@@ -77,7 +95,7 @@ public class BuildingPlacementManager : MonoBehaviour
 
             if (Input.GetMouseButtonDown(0))
             {
-                PlaceBuilding();
+                PlaceBuilding(hitInfo.point);
                 _buildingToPlace = null;
                 _placementGhost.SetActive(false);
             }
@@ -87,29 +105,33 @@ public class BuildingPlacementManager : MonoBehaviour
                 _buildingToPlace = null;
                 _placementGhost.SetActive(false);
             }
-
-            /*if (hitInfo.Equals(_buildingToPlace) && Input.GetKeyDown(KeyCode.Delete))
-            {
-                _buildingToPlace.GameObject.SetActive(false);
-            }*/
         }
     }
 
-    private void PlaceBuilding()
+    private void PlaceBuilding(Vector3 loc)
     {
         if (_buildingToPlace != null)
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            Physics.Raycast(ray, out RaycastHit hitInfo, 300, GroundMask);
-
-            PlacedParticles.Play();
-            GameObject go = Instantiate(_buildingToPlace.BuildingPlacedPrefab, hitInfo.point, _buildingToPlace.BuildingPlacedPrefab.transform.rotation);
+            _placedParticles.transform.position = loc;
+            _placedParticles.Play();
+            GameObject go = Instantiate(_buildingToPlace.BuildingPlacedPrefab, loc, _buildingToPlace.BuildingPlacedPrefab.transform.rotation);
+            go.transform.parent = _buildingsGrp.transform;
+            //go.layer = _buildingsMask;
         }
     }
 
-    /*private void DismantleBuilding(BuildingData building)
+    public bool BuildingOptions(/*PlacedBuildingsBase buildingPlaced*/ Ray ray)
     {
-        building.GameObject.SetActive(false);
-    }*/
+        //buildingPlaced.gameObject.SetActive(false);
+
+        if (Physics.Raycast(ray, out RaycastHit hitInfo, 300, _buildingsMask))
+        {
+            Debug.Log($"Dismantling building: {hitInfo.collider.gameObject.name}");
+            hitInfo.collider.gameObject.SetActive(false);
+            return true;
+        }
+        Debug.Log("No building hit");
+        return false;
+    }
 }
 

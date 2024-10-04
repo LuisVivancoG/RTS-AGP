@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7957840789326516518}
   - component: {fileID: 6064471053055930268}
   - component: {fileID: 2704130867536168901}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: air-balloon-base-steampunk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1218473810461563576}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Balloon_Geo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -128,7 +128,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7596486972042515071}
   - component: {fileID: 7782474818106733297}
-  m_Layer: 0
+  - component: {fileID: 9162424278030241067}
+  m_Layer: 7
   m_Name: Laboratory_Placed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -165,6 +166,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ScriptedObjectData: {fileID: 11400000, guid: 5eedbca8b8fdc7349bc27ffe31fe9ee7, type: 2}
   _troopsUpgrade: 000000
+--- !u!65 &9162424278030241067
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7072890070839740613}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 10.365858, y: 16.52691, z: 10.365862}
+  m_Center: {x: -0.0000011920929, y: 8.01979, z: -0.00000333786}
 --- !u!1 &8591748505111900554
 GameObject:
   m_ObjectHideFlags: 0
@@ -176,7 +198,7 @@ GameObject:
   - component: {fileID: 1382379130437048433}
   - component: {fileID: 2385758714845508385}
   - component: {fileID: 4935602524519276086}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: air-balloon-fan-steampunk
   m_TagString: Untagged
   m_Icon: {fileID: 0}

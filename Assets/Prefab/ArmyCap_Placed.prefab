@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3665459767242914537}
   - component: {fileID: 7583764485670585977}
   - component: {fileID: 4909378114637926333}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: tram-a-locomotive-steampunk-wheel-base-fr
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -98,8 +98,7 @@ GameObject:
   - component: {fileID: 856998897834756856}
   - component: {fileID: 8956139577306746153}
   - component: {fileID: 6825825167050568374}
-  - component: {fileID: 3769962855594138712}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: tram-a-locomotive-steampunk-wheel-c
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -173,28 +172,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &3769962855594138712
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 702961626344329900}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 7984470929510045260, guid: 280d875fd47d15642a4beb62b4b41f69, type: 3}
 --- !u!1 &1669699389552599265
 GameObject:
   m_ObjectHideFlags: 0
@@ -205,7 +182,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2044676094028184155}
   - component: {fileID: 2189904782867823076}
-  m_Layer: 0
+  - component: {fileID: 2155547186644785118}
+  m_Layer: 7
   m_Name: ArmyCap_Placed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -245,6 +223,27 @@ MonoBehaviour:
   _spawnUnits: 0
   _unitsPerCycle: 2
   _troopSpawned: 0
+--- !u!65 &2155547186644785118
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1669699389552599265}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 3.1843667, y: 5.7913456, z: 10.174635}
+  m_Center: {x: 0.018812895, y: 2.9266787, z: 0.012210846}
 --- !u!1 &3196387149930512372
 GameObject:
   m_ObjectHideFlags: 0
@@ -256,7 +255,7 @@ GameObject:
   - component: {fileID: 2854433995450130128}
   - component: {fileID: 2268319974720006267}
   - component: {fileID: 8801084376641623574}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: tram-a-locomotive-steampunk-wheel-base-ba
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -343,8 +342,7 @@ GameObject:
   - component: {fileID: 6645134000333792036}
   - component: {fileID: 7882976034165539438}
   - component: {fileID: 8065357032693642407}
-  - component: {fileID: 8820156696883730776}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: tram-a-locomotive-steampunk-base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -419,28 +417,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &8820156696883730776
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3469288970622476325}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -2536201803507650875, guid: 280d875fd47d15642a4beb62b4b41f69, type: 3}
 --- !u!1 &4012870147776851361
 GameObject:
   m_ObjectHideFlags: 0
@@ -452,8 +428,7 @@ GameObject:
   - component: {fileID: 5774408527543791222}
   - component: {fileID: 223339254922559289}
   - component: {fileID: 4351881244779478347}
-  - component: {fileID: 1998689387667904465}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: tram-a-locomotive-steampunk-wheel-d
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -527,28 +502,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &1998689387667904465
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4012870147776851361}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 1516391745851782161, guid: 280d875fd47d15642a4beb62b4b41f69, type: 3}
 --- !u!1 &4701397099368254480
 GameObject:
   m_ObjectHideFlags: 0
@@ -560,8 +513,7 @@ GameObject:
   - component: {fileID: 9180549371191052981}
   - component: {fileID: 320736177381306952}
   - component: {fileID: 6783453906861805808}
-  - component: {fileID: 5443123612700018845}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: tram-a-locomotive-steampunk-wheel-a
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -635,28 +587,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &5443123612700018845
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4701397099368254480}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -1735065684470819621, guid: 280d875fd47d15642a4beb62b4b41f69, type: 3}
 --- !u!1 &4998122156014640958
 GameObject:
   m_ObjectHideFlags: 0
@@ -666,7 +596,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2940622423352349749}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: ArmyCap_Placed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -703,8 +633,7 @@ GameObject:
   - component: {fileID: 2113351429283821638}
   - component: {fileID: 3108232847785362151}
   - component: {fileID: 3428789823629478673}
-  - component: {fileID: 2899869950919094785}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: tram-a-locomotive-steampunk-trolley-pole
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -778,28 +707,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &2899869950919094785
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6764225821585215131}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -6883270311856393534, guid: 280d875fd47d15642a4beb62b4b41f69, type: 3}
 --- !u!1 &8700185087994177418
 GameObject:
   m_ObjectHideFlags: 0
@@ -811,8 +718,7 @@ GameObject:
   - component: {fileID: 8639941143056519344}
   - component: {fileID: 7648430637438268061}
   - component: {fileID: 1149628119984370417}
-  - component: {fileID: 7846717733303422767}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: tram-a-locomotive-steampunk-wheel-b
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -886,25 +792,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &7846717733303422767
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8700185087994177418}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -1474582943898974190, guid: 280d875fd47d15642a4beb62b4b41f69, type: 3}
