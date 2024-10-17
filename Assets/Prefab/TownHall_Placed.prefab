@@ -46,7 +46,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8f6d853e5c67ac4aad7fab9caca74e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ScriptedObjectData: {fileID: 11400000, guid: ba713f6c5c71d904ca3e9082d5f3b8b9, type: 2}
+  _scriptedObjectData: {fileID: 11400000, guid: ba713f6c5c71d904ca3e9082d5f3b8b9,
+    type: 2}
   _villagersUnitsMax: 050000000a00000014000000
   _baseFoodPerCycle: 50
 --- !u!65 &2792324214762429080

@@ -4,7 +4,7 @@ using TMPro;
 
 public class SelectBuildingButton : MonoBehaviour
 {
-    [SerializeField] private Image BuildingSprite;
+    [SerializeField] private Image _buildingSprite;
     [SerializeField] private TMP_Text _buildingName;
 
     private BuildingData _data;
@@ -15,7 +15,7 @@ public class SelectBuildingButton : MonoBehaviour
         _data = data;
         _manager = manager;
         // setup ui of the button
-        BuildingSprite.sprite = data.BuildingSprite;
+        _buildingSprite.sprite = data.BuildingSprite;
         _buildingName.text = data.name;
     }
 

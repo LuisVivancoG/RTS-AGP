@@ -218,7 +218,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d677afdac659024badd3fd5d3fb896d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ScriptedObjectData: {fileID: 11400000, guid: 51f2c8565b014f4498528b4a4912c85e, type: 2}
+  _scriptedObjectData: {fileID: 11400000, guid: 51f2c8565b014f4498528b4a4912c85e,
+    type: 2}
   _additionalArmyUnits: 0a000000140000001e000000
   _spawnUnits: 0
   _unitsPerCycle: 2

@@ -114,7 +114,7 @@ public class BuildingPlacementManager : MonoBehaviour
         {
             _placedParticles.transform.position = loc;
             _placedParticles.Play();
-            GameObject go = Instantiate(_buildingToPlace.BuildingPlacedPrefab, loc, _buildingToPlace.BuildingPlacedPrefab.transform.rotation);
+            GameObject go = Instantiate(_buildingToPlace.BuildingPlacedPrefab, loc, Quaternion.identity);
             go.transform.parent = _buildingsGrp.transform;
             //go.layer = _buildingsMask;
         }

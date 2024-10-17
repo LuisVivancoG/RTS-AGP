@@ -164,7 +164,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68262de17cd6efd49919714030a75f8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ScriptedObjectData: {fileID: 11400000, guid: 5eedbca8b8fdc7349bc27ffe31fe9ee7, type: 2}
+  _scriptedObjectData: {fileID: 11400000, guid: 5eedbca8b8fdc7349bc27ffe31fe9ee7,
+    type: 2}
   _troopsUpgrade: 000000
 --- !u!65 &9162424278030241067
 BoxCollider:

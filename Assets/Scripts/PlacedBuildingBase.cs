@@ -2,16 +2,16 @@ using UnityEngine;
 
 public class PlacedBuildingsBase : MonoBehaviour
 {
-    [SerializeField] private BuildingData ScriptedObjectData;
+    [SerializeField] private BuildingData _scriptedObjectData;
 
-    private int CurrentHP;
+    private int _currentHP;
 
-    private int BuildingLvl;
+    private int _buildingLvl;
 
     private void Start()
     {
-        CurrentHP = ScriptedObjectData.MaxHp[0];
-        BuildingLvl = 1;
+        _currentHP = _scriptedObjectData.MaxHp[0];
+        _buildingLvl = 1;
     }
 
     public void GetBuildingFromPool()
@@ -21,17 +21,17 @@ public class PlacedBuildingsBase : MonoBehaviour
 
     public void CalculateDamage(int damageReceived)
     {
-        damageReceived -= ScriptedObjectData.Armor;
+        damageReceived -= _scriptedObjectData.Armor;
         TakeDamage(damageReceived);
     }
     private void TakeDamage(int damageTaken)
     {
-        CurrentHP -= damageTaken;
+        _currentHP -= damageTaken;
     }
 
     public void CanLvlUp()
     {
-        ScriptedObjectData.CanLevelUp(BuildingLvl);
+        _scriptedObjectData.CanLevelUp(_buildingLvl);
     }
 }
 

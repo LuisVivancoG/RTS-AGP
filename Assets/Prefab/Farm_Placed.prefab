@@ -99,7 +99,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec6abfbe1bd0f44488ac5954f6233079, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ScriptedObjectData: {fileID: 11400000, guid: 82bf75de022940d44a0f1047beb84dbe, type: 2}
+  _scriptedObjectData: {fileID: 11400000, guid: 82bf75de022940d44a0f1047beb84dbe,
+    type: 2}
   _foodPerCycle:
   - 30
   - 80

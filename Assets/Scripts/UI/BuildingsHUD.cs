@@ -6,4 +6,9 @@ public class BuildingsHUD : MonoBehaviour
 {
     [SerializeField] private BuildingPlacementManager _bpm;
     [SerializeField] private UIManager _uiManager;
+
+    public void OnButtonDismantle(PlacedBuildingsBase buildingPlaced)
+    {
+        //_bpm.BuildingOptions();
+    }
 }
