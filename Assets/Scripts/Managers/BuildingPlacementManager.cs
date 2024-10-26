@@ -25,12 +25,19 @@ public class BuildingPlacementManager : MonoBehaviour
     [SerializeField] private GameObject _buildingsGrp;
     private BuildingPool _placedBuildingPool;
 
-    [SerializeField] private UIManager _uiManager; 
+    [SerializeField] private UIManager _uiManager;
 
-    //private void Start()
-    //{
+    //[SerializeField] private GameManager _gameManager;
+    //private GameGrid _gameGrid;
+
+    private GameGrid _gameGrid = new GameGrid(30, 30, 30);
+
+
+    private void Start()
+    {
+        //_gameGrid = _gameManager._gameGrid();
     //    _placedBuildingPool = new BuildingPool();
-    //}
+    }
 
     //public void GetBuildingFromPool(PlacedBuildingsBase)
     //{
@@ -91,11 +98,13 @@ public class BuildingPlacementManager : MonoBehaviour
                 _ghostsObjectsPool.Add(_buildingToPlace.BuildingGhostPrefab.name, _placementGhost);
             }
 
-            _placementGhost.transform.position = hitInfo.point;
+            _placementGhost.transform.position = _gameGrid.GetCellWorldCenter(hitInfo.point);
+            
 
             if (Input.GetMouseButtonDown(0))
             {
-                PlaceBuilding(hitInfo.point);
+                PlaceBuilding(_gameGrid.GetCellWorldCenter(hitInfo.point));
+
                 _buildingToPlace = null;
                 _placementGhost.SetActive(false);
             }
