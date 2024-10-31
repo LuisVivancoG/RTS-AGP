@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Laboratory : PlacedBuildingsBase
+public class Laboratory : PlacedBuildingBase
 {
     [SerializeField] private bool[] _troopsUpgrade;
 }

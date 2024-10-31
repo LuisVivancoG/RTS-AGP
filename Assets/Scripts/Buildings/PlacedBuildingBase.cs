@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlacedBuildingsBase : MonoBehaviour
+public class PlacedBuildingBase : MonoBehaviour
 {
     [SerializeField] private BuildingData _scriptedObjectData;
 

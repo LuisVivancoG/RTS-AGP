@@ -9,7 +9,7 @@ public class BuildingPlacementUI : MonoBehaviour
 
     private void Start()
     {
-        foreach (var building in _buildingPlacementManager.AllBuildings.Data)
+        foreach (var building in _buildingPlacementManager._runTimeBuildingsData.Data)
         {
             SelectBuildingButton button = Instantiate(SelectBuildingButton, ScrollRectContent);
             button.Setup(building, _buildingPlacementManager);

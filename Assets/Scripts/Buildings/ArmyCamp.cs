@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ArmyCamp : PlacedBuildingsBase
+public class ArmyCamp : PlacedBuildingBase
 {
     [SerializeField] private int[] _additionalArmyUnits;
     [SerializeField] private int _spawnUnits;

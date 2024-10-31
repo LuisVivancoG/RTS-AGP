@@ -3,6 +3,8 @@ using UnityEngine;
 using System;
 using Pool;
 using Unity.VisualScripting;
+using System.Linq;
+using UnityEngine.Pool;
 
 /// <summary>
 /// This is the controller for placing buildings.
@@ -13,7 +15,7 @@ public class BuildingPlacementManager : MonoBehaviour
     [SerializeField] private AllBuildingsData _allBuildingData;
     [SerializeField] private LayerMask _groundMask;
     [SerializeField] private LayerMask _buildingsMask;
-    public AllBuildingsData AllBuildings => _allBuildingData;
+    internal AllBuildingsData _runTimeBuildingsData => _allBuildingData;
 
     private BuildingData _buildingToPlace = null;
     private GameObject _placementGhost = null;
@@ -23,7 +25,7 @@ public class BuildingPlacementManager : MonoBehaviour
     [SerializeField] private ParticleSystem _placedParticles;
 
     [SerializeField] private GameObject _buildingsGrp;
-    private BuildingPool _placedBuildingPool;
+    private Dictionary<BuildingType, BuildingPool> _buildingsPools;
 
     [SerializeField] private UIManager _uiManager;
 
@@ -36,13 +38,48 @@ public class BuildingPlacementManager : MonoBehaviour
     private void Start()
     {
         //_gameGrid = _gameManager._gameGrid();
-    //    _placedBuildingPool = new BuildingPool();
+        //_placedBuildingsPool = new Dictionary<BuildingType, BuildingPool>();
+        //foreach (BuildingType type in Enum.GetValues(typeof (BuildingType)))
+        //{
+        //    _placedBuildingsPool.Add(type, new BuildingPool(() => CreatePoolBuildingType(type), GetBuildingFromPool, ReturnBuildingToPool));
+        //}
+
+        InitializePool();
     }
 
-    //public void GetBuildingFromPool(PlacedBuildingsBase)
-    //{
-    //    buildingToFetch.gameObject.SetActive(true);
-    //}
+    internal void InitializePool()
+    {
+
+        _buildingsPools = new Dictionary<BuildingType, BuildingPool>();
+        foreach (BuildingType type in Enum.GetValues(typeof(BuildingType)))
+        {
+            //if(!_BuildingsPools.ContainsKey(BuildingType))
+            _buildingsPools.Add(type, new BuildingPool(() => CreatePoolBuildingType(type), GetBuildingFromPool, ReturnBuildingToPool));
+        }
+    }
+
+    private PlacedBuildingBase CreatePoolBuildingType(BuildingType buildingType)
+    {
+        BuildingData dataToUse = GetBuildingData(buildingType);
+        PlacedBuildingBase newPooledBuilding = Instantiate(dataToUse.BuildingPlacedPrefab, transform);
+        newPooledBuilding.transform.parent = _buildingsGrp.transform;
+
+        return newPooledBuilding;
+    }
+
+    private BuildingData GetBuildingData(BuildingType buildingType)
+    {
+        return _allBuildingData.Data.FirstOrDefault(b => b.KindOfStructure == buildingType);
+    }
+
+    private void GetBuildingFromPool(PlacedBuildingBase building)
+    {
+        building.gameObject.SetActive(true);
+    }
+    private void ReturnBuildingToPool(PlacedBuildingBase building)
+    {
+        building.gameObject.SetActive(false);
+    }
 
     /// <summary>
     /// Called by the <see cref="BuildingPlacementUI"/>
@@ -123,7 +160,7 @@ public class BuildingPlacementManager : MonoBehaviour
         {
             _placedParticles.transform.position = loc;
             _placedParticles.Play();
-            GameObject go = Instantiate(_buildingToPlace.BuildingPlacedPrefab, loc, Quaternion.identity);
+            PlacedBuildingBase go = Instantiate(_buildingToPlace.BuildingPlacedPrefab, loc, Quaternion.identity);
             go.transform.parent = _buildingsGrp.transform;
             //go.layer = _buildingsMask;
         }
@@ -132,6 +169,8 @@ public class BuildingPlacementManager : MonoBehaviour
     public bool BuildingOptions(/*PlacedBuildingsBase buildingPlaced*/ Ray ray)
     {
         //buildingPlaced.gameObject.SetActive(false);
+
+        //todo display a options popup with dismantling and upgrade buttons as well as other data info
 
         if (Physics.Raycast(ray, out RaycastHit hitInfo, 300, _buildingsMask))
         {
