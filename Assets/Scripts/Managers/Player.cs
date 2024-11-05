@@ -12,7 +12,7 @@ public class Player
     private float _storedFood;
     private PlayerBuildingsManager _buildingManager;
 
-    public Action<float> OnPowerChanged;
+    public Action<float> OnFoodChanged;
 
     public PlayerBuildingsManager BuildingManager => _buildingManager;
 
@@ -28,7 +28,7 @@ public class Player
     public void ResourceGain(float gain)
     {
         _storedFood += gain;
-        OnPowerChanged?.Invoke(_storedFood);
+        OnFoodChanged?.Invoke(_storedFood);
     }
 
 }

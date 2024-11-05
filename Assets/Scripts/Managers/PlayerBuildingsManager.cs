@@ -19,6 +19,5 @@ public class PlayerBuildingsManager
     public void AddBuilding(PlacedBuildingBase placedBuilding)
     {
         _ownedBuildings.Add(placedBuilding);
-
     }
 }

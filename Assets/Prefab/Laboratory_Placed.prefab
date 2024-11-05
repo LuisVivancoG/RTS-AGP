@@ -127,8 +127,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7596486972042515071}
-  - component: {fileID: 7782474818106733297}
   - component: {fileID: 9162424278030241067}
+  - component: {fileID: 6564861581791199225}
   m_Layer: 7
   m_Name: Laboratory_Placed
   m_TagString: Untagged
@@ -152,21 +152,6 @@ Transform:
   - {fileID: 1218473810461563576}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7782474818106733297
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7072890070839740613}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68262de17cd6efd49919714030a75f8e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _scriptedObjectData: {fileID: 11400000, guid: 5eedbca8b8fdc7349bc27ffe31fe9ee7,
-    type: 2}
-  _troopsUpgrade: 000000
 --- !u!65 &9162424278030241067
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -188,6 +173,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.365858, y: 16.52691, z: 10.365862}
   m_Center: {x: -0.0000011920929, y: 8.01979, z: -0.00000333786}
+--- !u!114 &6564861581791199225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7072890070839740613}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68262de17cd6efd49919714030a75f8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _scriptedObjectData: {fileID: 11400000, guid: 5eedbca8b8fdc7349bc27ffe31fe9ee7,
+    type: 2}
+  _troopsUpgrade: 000101
 --- !u!1 &8591748505111900554
 GameObject:
   m_ObjectHideFlags: 0

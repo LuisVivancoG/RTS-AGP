@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlacedBuildingBase : MonoBehaviour
 {
     [SerializeField] private BuildingData _scriptedObjectData;
+    public BuildingData _buildingData => _scriptedObjectData;
 
     private int _currentHP;
 

@@ -11,6 +11,8 @@ public class Agent : MonoBehaviour
     //public IDictionary<Vector3, string> obstacles;
 
     [SerializeField] private GameObject _objective;
+    private GameManager gameManager;
+
     private void Start()
     {
         int w = 30;

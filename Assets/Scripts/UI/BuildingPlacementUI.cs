@@ -4,14 +4,14 @@ public class BuildingPlacementUI : MonoBehaviour
 {
     [SerializeField] private BuildingPlacementManager _buildingPlacementManager;
 
-    [SerializeField] private SelectBuildingButton SelectBuildingButton;
-    [SerializeField] private Transform ScrollRectContent;
+    [SerializeField] private SelectBuildingButton _selectBuildingButton;
+    [SerializeField] private Transform _scrollRectContent;
 
     private void Start()
     {
         foreach (var building in _buildingPlacementManager._runTimeBuildingsData.Data)
         {
-            SelectBuildingButton button = Instantiate(SelectBuildingButton, ScrollRectContent);
+            SelectBuildingButton button = Instantiate(_selectBuildingButton, _scrollRectContent);
             button.Setup(building, _buildingPlacementManager);
         }
     }

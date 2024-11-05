@@ -14,8 +14,6 @@ namespace Pool
             bool collectionCheck = true,
             int defaultCapacity = 10,
             int maxSize = 10000) : base(createFunc, actionOnGet, actionOnRelease, actionOnDestroy, collectionCheck, defaultCapacity, maxSize)
-        {
-            //actionOnGet = getbuildingfrompool;
-        }
+        {}
     }
 }

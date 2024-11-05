@@ -2,9 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Pool;
-using Unity.VisualScripting;
 using System.Linq;
-using UnityEngine.Pool;
 
 /// <summary>
 /// This is the controller for placing buildings.
@@ -12,135 +10,86 @@ using UnityEngine.Pool;
 /// </summary>
 public class BuildingPlacementManager : MonoBehaviour
 {
+    [Header("ObjectPooling")]
     [SerializeField] private AllBuildingsData _allBuildingData;
-    [SerializeField] private LayerMask _groundMask;
-    [SerializeField] private LayerMask _buildingsMask;
     internal AllBuildingsData _runTimeBuildingsData => _allBuildingData;
-
-    private BuildingData _buildingToPlace = null;
-    private GameObject _placementGhost = null;
-
     private Dictionary<string, GameObject> _ghostsObjectsPool = new();
-
-    [SerializeField] private ParticleSystem _placedParticles;
-
-    [SerializeField] private GameObject _buildingsGrp;
     private Dictionary<BuildingType, BuildingPool> _buildingsPools;
 
+    [Header("Placement buildings")]
+    [SerializeField] private LayerMask _groundMask;
+    [SerializeField] private LayerMask _buildingsMask;
+    private BuildingData _buildingToPlace = null;
+    private GameObject _placementGhost = null;
+    private bool _allowPlacement = true;
+
+    [SerializeField] private ParticleSystem _placedParticles;
+    [SerializeField] private GameObject _buildingsGrp;
+    [SerializeField] private GameObject _ghostsGrp;
+
+    [SerializeField] private Material _canPlaceMaterial;
+    [SerializeField] private Material _cannotPlaceMaterial;
+
+    [Header("Player settings")]
     [SerializeField] private UIManager _uiManager;
-
-    //[SerializeField] private GameManager _gameManager;
-    //private GameGrid _gameGrid;
-
-    private GameGrid _gameGrid = new GameGrid(30, 30, 30);
+    [SerializeField] private GameManager _gameManager;
+    private PlayerBuildingsManager _localPlayerBuildingManager = null;
 
 
     private void Start()
     {
-        //_gameGrid = _gameManager._gameGrid();
-        //_placedBuildingsPool = new Dictionary<BuildingType, BuildingPool>();
-        //foreach (BuildingType type in Enum.GetValues(typeof (BuildingType)))
-        //{
-        //    _placedBuildingsPool.Add(type, new BuildingPool(() => CreatePoolBuildingType(type), GetBuildingFromPool, ReturnBuildingToPool));
-        //}
-
         InitializePool();
     }
 
-    internal void InitializePool()
-    {
-
-        _buildingsPools = new Dictionary<BuildingType, BuildingPool>();
-        foreach (BuildingType type in Enum.GetValues(typeof(BuildingType)))
-        {
-            //if(!_BuildingsPools.ContainsKey(BuildingType))
-            _buildingsPools.Add(type, new BuildingPool(() => CreatePoolBuildingType(type), GetBuildingFromPool, ReturnBuildingToPool));
-        }
-    }
-
-    private PlacedBuildingBase CreatePoolBuildingType(BuildingType buildingType)
-    {
-        BuildingData dataToUse = GetBuildingData(buildingType);
-        PlacedBuildingBase newPooledBuilding = Instantiate(dataToUse.BuildingPlacedPrefab, transform);
-        newPooledBuilding.transform.parent = _buildingsGrp.transform;
-
-        return newPooledBuilding;
-    }
-
-    private BuildingData GetBuildingData(BuildingType buildingType)
-    {
-        return _allBuildingData.Data.FirstOrDefault(b => b.KindOfStructure == buildingType);
-    }
-
-    private void GetBuildingFromPool(PlacedBuildingBase building)
-    {
-        building.gameObject.SetActive(true);
-    }
-    private void ReturnBuildingToPool(PlacedBuildingBase building)
-    {
-        building.gameObject.SetActive(false);
-    }
-
-    /// <summary>
-    /// Called by the <see cref="BuildingPlacementUI"/>
-    /// </summary>
-    public void OnNewBuildingSelected(BuildingData building)
-    {
-        _buildingToPlace = building;
-        //_buildingsGhostsPool.Add(_buildingToPlace.BuildingGhostPrefab);
-    }
-
-    /// <summary>
-    /// If we have a <see cref="_buildingToPlace"/> then show the ghost for it at the mouse position
-    /// This will need to calculate where ground is.
-    /// </summary>
     private void Update()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        if (_buildingToPlace == null)
+        if (!_allowPlacement)
         {
-            if (Physics.Raycast(ray, out RaycastHit hitBuildingsInfo, 300, _buildingsMask) && Input.GetMouseButtonDown(0))
+            return;
+        }
+        RaycastHit hitInfo;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //Cast a ray from camera that updates with mouse position
+        if (_buildingToPlace == null) //if there is no building to place then check for left click
+        {
+            if (Input.GetMouseButtonDown(0))
             {
-                //var buildingClicked = hitBuildingsInfo.transform.GetComponent<PlacedBuildingsBase>();
-                //_uiManager.OptionsEnable(buildingClicked);
-                //BuildingOptions(buildingClicked);
-
-                if (BuildingOptions(ray))
+                if (Physics.Raycast(ray, out hitInfo, 10000, _buildingsMask)) //if the position was on a building placed then retrieve info
                 {
-                    return;
+                    var buildingClicked = hitInfo.transform.GetComponentInParent<PlacedBuildingBase>();
+                    Debug.Log(buildingClicked);
+                    BuildingOptions(buildingClicked);
                 }
             }
-
             return;
         }
 
-
-        if (Physics.Raycast(ray, out RaycastHit hitInfo, 300, _groundMask))
+        if (Physics.Raycast(ray, out hitInfo, 10000, _groundMask)) //if the raycast touches groundMask
         {
-            if (_placementGhost != null)
+            if (_placementGhost != null) //if ghost is assigned then disable ghost
             {
-                _placementGhost.SetActive(false);
+                _placementGhost.SetActive(false); 
             }
 
-            if (_ghostsObjectsPool.TryGetValue(_buildingToPlace.BuildingGhostPrefab.name, out var existingGhost))
+            if (_ghostsObjectsPool.TryGetValue(_buildingToPlace.BuildingGhostPrefab.name, out var existingGhost)) //look on the ghost pool for buildingGhostPrefab
             {
                 _placementGhost = existingGhost;
                 _placementGhost.SetActive(true);
             }
 
-            else
+            else //if buildingGhostPrefab was not on pool then instantiate a new one and add it to the pool
             {
                 _placementGhost = Instantiate(_buildingToPlace.BuildingGhostPrefab, transform);
+                _placementGhost.transform.parent = _ghostsGrp.transform;
                 _ghostsObjectsPool.Add(_buildingToPlace.BuildingGhostPrefab.name, _placementGhost);
             }
 
-            _placementGhost.transform.position = _gameGrid.GetCellWorldCenter(hitInfo.point);
-            
+            _placementGhost.transform.position = _gameManager.GameGrid.GetCellWorldCenter(hitInfo.point);
+
+            var pos = _gameManager.GameGrid.GetCellWorldCenter(hitInfo.point);
 
             if (Input.GetMouseButtonDown(0))
             {
-                PlaceBuilding(_gameGrid.GetCellWorldCenter(hitInfo.point));
+                PlaceBuilding(pos);
 
                 _buildingToPlace = null;
                 _placementGhost.SetActive(false);
@@ -154,32 +103,82 @@ public class BuildingPlacementManager : MonoBehaviour
         }
     }
 
+    internal void InitializePool()
+    {
+
+        _buildingsPools = new Dictionary<BuildingType, BuildingPool>(); //Creates a new _buildingsPools
+        foreach (BuildingType type in Enum.GetValues(typeof(BuildingType))) //Adds a pool for each BuildingType in the _buildingsPools
+        {
+            _buildingsPools.Add(type, new BuildingPool(() => CreatePoolBuildingType(type), GetBuildingFromPool, ReturnBuildingToPool));
+        }
+    }
+
+    private PlacedBuildingBase CreatePoolBuildingType(BuildingType buildingType) //Method to create a Pool with the buildingType passed
+    {
+        BuildingData dataToUse = GetBuildingData(buildingType);
+        PlacedBuildingBase newPooledBuilding;
+        newPooledBuilding = Instantiate(dataToUse.BuildingPlacedPrefab, _buildingsGrp.transform);
+
+        return newPooledBuilding; //Does this mean a single instance of object is created or a Pool was created? ASK THIS
+    }
+
+    private BuildingData GetBuildingData(BuildingType buildingType) //Method that returns data from buildingType passed
+    {
+        return _allBuildingData.Data.FirstOrDefault(b => b.KindOfStructure == buildingType);
+    }
+
+    private void GetBuildingFromPool(PlacedBuildingBase building) //Enable available building from placedBuildingBase passed
+    {
+        building.gameObject.SetActive(true);
+    }
+    private void ReturnBuildingToPool(PlacedBuildingBase building) //Disable available building from placedBuildingBase
+    {
+        building.gameObject.SetActive(false);
+    }
+
+    /// <summary>
+    /// Called by the <see cref="BuildingPlacementUI"/>
+    /// </summary>
+    public void OnNewBuildingSelected(BuildingData building)
+    {
+        _buildingToPlace = building;
+    }
+
+    /// <summary>
+    /// If we have a <see cref="_buildingToPlace"/> then show the ghost for it at the mouse position
+    /// This will need to calculate where ground is.
+    /// </summary>
+
     private void PlaceBuilding(Vector3 loc)
     {
         if (_buildingToPlace != null)
         {
+            var building = _buildingsPools[_buildingToPlace.KindOfStructure].Get();
+            
+            building.transform.position = loc;
+            _localPlayerBuildingManager.AddBuilding(building);
+
             _placedParticles.transform.position = loc;
             _placedParticles.Play();
-            PlacedBuildingBase go = Instantiate(_buildingToPlace.BuildingPlacedPrefab, loc, Quaternion.identity);
-            go.transform.parent = _buildingsGrp.transform;
-            //go.layer = _buildingsMask;
         }
     }
 
-    public bool BuildingOptions(/*PlacedBuildingsBase buildingPlaced*/ Ray ray)
+    public void BuildingOptions(PlacedBuildingBase buildingPlaced)
     {
-        //buildingPlaced.gameObject.SetActive(false);
-
+        buildingPlaced.gameObject.SetActive(false);
+        _buildingsPools[buildingPlaced._buildingData.KindOfStructure].Release(buildingPlaced);
         //todo display a options popup with dismantling and upgrade buttons as well as other data info
+    }
 
-        if (Physics.Raycast(ray, out RaycastHit hitInfo, 300, _buildingsMask))
-        {
-            Debug.Log($"Dismantling building: {hitInfo.collider.gameObject.name}");
-            hitInfo.collider.gameObject.SetActive(false);
-            return true;
-        }
-        Debug.Log("No building hit");
-        return false;
+    internal void SetLocalBuildingManager(PlayerBuildingsManager playerBuildingsManager)
+    {
+        _localPlayerBuildingManager = playerBuildingsManager;
+    }
+
+
+    internal void SetGameManager(GameManager gameManager)
+    {
+        _gameManager = gameManager;
     }
 }
 

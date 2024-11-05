@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8315931234877209468}
   - component: {fileID: 7245226090294084450}
+  - component: {fileID: 5643138269938981109}
   m_Layer: 7
   m_Name: Road_Placed
   m_TagString: Untagged
@@ -54,6 +55,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 11.2, y: 0.36713243, z: 11.2}
   m_Center: {x: 0, y: 0.05304987, z: 0}
+--- !u!114 &5643138269938981109
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8656991372640657862}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5afb5de2abf639e48b749ad65f69bda5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _scriptedObjectData: {fileID: 11400000, guid: 66aca296a941002428512df839145598,
+    type: 2}
+  _speedBoost: 050000001400000032000000
 --- !u!1001 &7272699154127212722
 PrefabInstance:
   m_ObjectHideFlags: 0

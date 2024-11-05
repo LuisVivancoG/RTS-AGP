@@ -14,7 +14,7 @@ public class GameGrid
     private Dictionary<Vector2, GridCell> _grid = new();
     public int CellCount => _grid.Count;
 
-    public GameGrid(int mapWidth, int mapHeight, int cellSize)
+    public GameGrid(int mapWidth, int mapHeight, int cellSize, GameManager gameManager)
     {
         _width = mapWidth;
         _height = mapHeight;
