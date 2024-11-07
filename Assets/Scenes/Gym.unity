@@ -964,6 +964,7 @@ GameObject:
   - component: {fileID: 1134170742}
   - component: {fileID: 1134170744}
   - component: {fileID: 1134170745}
+  - component: {fileID: 1134170746}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -1047,6 +1048,25 @@ MonoBehaviour:
   _playersGrp: {fileID: 884576918}
   _playerCount: 1
   _placementManager: {fileID: 1134170742}
+  _unitsManager: {fileID: 1134170746}
+--- !u!114 &1134170746
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1134170741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c9f78cdba9026541a0ced22290d5566, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _unitsPosition: {fileID: 1662218461}
+  _objectivePosition: {x: 0, y: 0, z: 0}
+  _moveSpeed: 10
+  _groundMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &1236145300
 GameObject:
   m_ObjectHideFlags: 0
@@ -1687,7 +1707,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -30, y: 0, z: -10}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 11, y: 11, z: 11}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1419930083}

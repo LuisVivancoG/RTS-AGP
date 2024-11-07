@@ -20,81 +20,16 @@ public class Pathfinder
     Dictionary<Vector3, Vector3> _nodeParents;
     private GameGrid _grid;
 
-    [SerializeField] private Transform _currentPosition;
-    [SerializeField] private Transform _objective;
-    private List<Vector3> _currentPathFound = new List<Vector3>();
-    private int _currentPathIndex;
-    [SerializeField] private float _movementSpeed = 10;
+    public List<Vector3> _currentPathFound = new List<Vector3>();
+    public int _currentPathIndex;
 
-    /*private void Start()
+    internal void StatusCheck()
     {
-        int w = 30;
-        int h = 30;
-        int size = 30;
-        float halfSize = size / 2f;
-
-        float posX = 0 - ((w * size) + halfSize);
-        for (int i = -w; i <= w + 1; i++)
-        {
-            float posZ = 0 - ((h * size) + halfSize);
-            for (int j = -h; j <= h + 1; j++)
-            {
-                posZ += size;
-                Vector3 newPosition = new Vector3(i, 0, j);
-
-                _walkablePositions.Add(new KeyValuePair<Vector3, bool>(newPosition, true));
-            }
-            posX += size;
-        }
-    } */
-
-    //private void OnDrawGizmos()
-    //{
-    //    Gizmos.color = Color.cyan;
-    //    int w = 30;
-    //    int h = 30;
-    //    int size = 1;
-    //    float halfSize = size / 2f;
-
-    //    float posX = 0 - ((w * size) + halfSize);
-    //    for (int i = -w; i <= w + 1; i++)
-    //    {
-    //        float posZ = 0 - ((h * size) + halfSize);
-    //        for (int j = -h; j <= h + 1; j++)
-    //        {
-    //            posZ += size;
-    //            Gizmos.DrawWireCube((new Vector3(posX, 0, posZ)), Vector3.one * size);
-    //        }
-    //        posX += size;
-    //    }
-    //}
-
-    private void Update()
-    {
-
-        //if (Input.GetKeyDown(KeyCode.Space))
-        //{
-        //    foreach (var entry in walkablePositions)
-        //    {
-        //        Debug.Log($"Position: {entry.Key}, Is Walkable: {entry.Value}");
-        //    }
-        //}
-
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            FindShortestPathAStar(_currentPosition.position, _objective.position, "manhattan");
-            _currentPathIndex = 0;
-        }
-        if (_currentPathFound != null && _currentPathIndex < _currentPathFound.Count)
-        {
-            Vector3 targetPos = _currentPathFound[_currentPathIndex];
-            _currentPosition.position = Vector3.MoveTowards(_currentPosition.position, targetPos, _movementSpeed * Time.deltaTime);
-
-            if (Vector3.Distance(_currentPosition.position, targetPos) < 0.1f)
-            {
-                _currentPathIndex++;
-            }
-        }
+        Debug.Log("_walkablePositions = " + _walkablePositions.Count);
+        Debug.Log("_obstacles = " + _obstacles.Count);
+        Debug.Log("_nodeParents = " + _nodeParents.Count);
+        Debug.Log("_currentPathFound = " + _currentPathFound.Count);
+        Debug.Log("_currentPathIndex = " + _currentPathIndex);
     }
 
     int EuclideanEstimate(Vector3 node, Vector3 goal)
@@ -124,7 +59,7 @@ public class Pathfinder
         return -1;
     }
 
-    List<Vector3> FindShortestPathAStar(Vector3 startPosition, Vector3 goalPosition, string heuristic)
+    internal List <Vector3> FindShortestPathAStar(Vector3 startPosition, Vector3 goalPosition, string heuristic)
     {
         uint nodeVisitCount = 0;
         float timeNow = Time.realtimeSinceStartup;
@@ -139,7 +74,7 @@ public class Pathfinder
         foreach (Vector3 vertex in validNodes)
         {
             heuristicScore.Add(new KeyValuePair<Vector3, int>(vertex, int.MaxValue));
-            distanceFromStart.Add(new KeyValuePair<Vector3, int>(vertex, int.MaxValue)); //?
+            distanceFromStart.Add(new KeyValuePair<Vector3, int>(vertex, int.MaxValue));
         }
 
         heuristicScore[startPosition] = HeuristicCostEstimate(startPosition, goalPosition, heuristic);
@@ -148,16 +83,21 @@ public class Pathfinder
         SimplePriorityQueue<Vector3, int> priorityQueue = new SimplePriorityQueue<Vector3, int>();
         priorityQueue.Enqueue(startPosition, heuristicScore[startPosition]);
 
+        Debug.Log("Count: " + priorityQueue.Count);
+
         while (priorityQueue.Count > 0)
         {
             // Get the node with the least distance from the start
             Vector3 curr = priorityQueue.Dequeue();
             nodeVisitCount++;
+            Debug.Log("Finished foreach");
 
             // If our current node is the goal then stop
             if (curr == goalPosition)
             {
+                Debug.Log("Reached goal position calculation");
                 return ReconstructPath(_nodeParents, goalPosition);
+                //return goalPosition;
             }
 
             IList<Vector3> neighbors = GetWalkableNodes(curr);
@@ -188,8 +128,8 @@ public class Pathfinder
                 }
             }
         }
-
         return new List<Vector3>();
+        //return startPosition;
     }
 
     List<Vector3> ReconstructPath(Dictionary<Vector3, Vector3> nodeParents, Vector3 goalPosition)
@@ -261,11 +201,11 @@ public class Pathfinder
             }
             _walkablePositions[cell.Key] = cell.Value.Walkable;
 
-            if (!_walkablePositions.ContainsKey(cell.Key))
-            {
-                _walkablePositions.Add(cell.Key, true);
-            }
-            _walkablePositions[cell.Key] = cell.Value.Walkable;
+            //if (!_walkablePositions.ContainsKey(cell.Key))
+            //{
+            //    _walkablePositions.Add(cell.Key, true);
+            //}
+            //_walkablePositions[cell.Key] = cell.Value.Walkable;
 
             if (!_obstacles.ContainsKey(cell.Key))
             {

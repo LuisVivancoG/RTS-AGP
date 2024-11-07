@@ -20,9 +20,12 @@ public class GameManager : MonoBehaviour
 
     private DamageSystem _damageSystem;
     public DamageSystem DamageSystem => _damageSystem;
+
+    [SerializeField] private UnitsManager _unitsManager;
     private void Awake()
     {
         _placementManager.SetGameManager(this);
+        _unitsManager.SetGameManager(this);
 
         for (int i=0; i<_playerCount; i++)
         {
@@ -34,12 +37,14 @@ public class GameManager : MonoBehaviour
                 //_playerUI.SusbcribeToPlayerUpdates(player);
             }
         }
+        //Debug.Log(GameGrid.Pathfinder._walkablePositions.Count);
         _gameGrid = new GameGrid(GridWidth, GridHeight, GridCellSize, CellTickRate, this);
+        //Debug.Log(GameGrid.Pathfinder._walkablePositions.Count);
     }
 
     private void Start()
     {
-        Debug.Log(_playerController.Count);
+        //Debug.Log(_playerController.Count);
     }
     private void Update()
     {
