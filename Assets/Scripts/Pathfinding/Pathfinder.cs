@@ -1,19 +1,32 @@
-using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 using Priority_Queue;
 
-public class Agent : MonoBehaviour
+public class Pathfinder
 {
-    public IDictionary<Vector3, bool> walkablePositions = new Dictionary<Vector3, bool>();
-    //IDictionary<Vector3, Vector3> nodeParents = new Dictionary<Vector3, Vector3>();
-    //public IDictionary<Vector3, string> obstacles;
+    public Pathfinder(GameGrid grid, Dictionary<Vector3, GridCell> cells)
+    {
+        _nodeParents = new Dictionary<Vector3, Vector3>();
+        _walkablePositions = new Dictionary<Vector3, bool>();
+        _obstacles = new Dictionary<Vector3, int>();
+        _grid = grid;
+        UpdateWalkableObstacles(cells);
+    }
 
-    [SerializeField] private GameObject _objective;
-    private GameManager gameManager;
+    public IDictionary<Vector3, bool> _walkablePositions;
+    public IDictionary<Vector3, int> _obstacles;
 
-    private void Start()
+    Dictionary<Vector3, Vector3> _nodeParents;
+    private GameGrid _grid;
+
+    [SerializeField] private Transform _currentPosition;
+    [SerializeField] private Transform _objective;
+    private List<Vector3> _currentPathFound = new List<Vector3>();
+    private int _currentPathIndex;
+    [SerializeField] private float _movementSpeed = 10;
+
+    /*private void Start()
     {
         int w = 30;
         int h = 30;
@@ -29,25 +42,18 @@ public class Agent : MonoBehaviour
                 posZ += size;
                 Vector3 newPosition = new Vector3(i, 0, j);
 
-                walkablePositions.Add(new KeyValuePair<Vector3, bool>(newPosition, true));
+                _walkablePositions.Add(new KeyValuePair<Vector3, bool>(newPosition, true));
             }
             posX += size;
         }
-    }
+    } */
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        { 
-            FindShortestPathAStar(this.transform.localPosition, _objective.transform.localPosition, "euclidean"); 
-        }
-    }
     //private void OnDrawGizmos()
     //{
     //    Gizmos.color = Color.cyan;
     //    int w = 30;
     //    int h = 30;
-    //    int size = 30;
+    //    int size = 1;
     //    float halfSize = size / 2f;
 
     //    float posX = 0 - ((w * size) + halfSize);
@@ -57,12 +63,39 @@ public class Agent : MonoBehaviour
     //        for (int j = -h; j <= h + 1; j++)
     //        {
     //            posZ += size;
-
     //            Gizmos.DrawWireCube((new Vector3(posX, 0, posZ)), Vector3.one * size);
     //        }
     //        posX += size;
     //    }
     //}
+
+    private void Update()
+    {
+
+        //if (Input.GetKeyDown(KeyCode.Space))
+        //{
+        //    foreach (var entry in walkablePositions)
+        //    {
+        //        Debug.Log($"Position: {entry.Key}, Is Walkable: {entry.Value}");
+        //    }
+        //}
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            FindShortestPathAStar(_currentPosition.position, _objective.position, "manhattan");
+            _currentPathIndex = 0;
+        }
+        if (_currentPathFound != null && _currentPathIndex < _currentPathFound.Count)
+        {
+            Vector3 targetPos = _currentPathFound[_currentPathIndex];
+            _currentPosition.position = Vector3.MoveTowards(_currentPosition.position, targetPos, _movementSpeed * Time.deltaTime);
+
+            if (Vector3.Distance(_currentPosition.position, targetPos) < 0.1f)
+            {
+                _currentPathIndex++;
+            }
+        }
+    }
 
     int EuclideanEstimate(Vector3 node, Vector3 goal)
     {
@@ -91,13 +124,12 @@ public class Agent : MonoBehaviour
         return -1;
     }
 
-    Vector3 FindShortestPathAStar(Vector3 startPosition, Vector3 goalPosition, string heuristic)
+    List<Vector3> FindShortestPathAStar(Vector3 startPosition, Vector3 goalPosition, string heuristic)
     {
-        Debug.Log(Vector3.Distance(startPosition, goalPosition));
         uint nodeVisitCount = 0;
         float timeNow = Time.realtimeSinceStartup;
 
-        IEnumerable<Vector3> validNodes = walkablePositions.Where(x => x.Value == true).Select(x => x.Key);
+        IEnumerable<Vector3> validNodes = _walkablePositions.Where(x => x.Value == true).Select(x => x.Key);
 
         IDictionary<Vector3, int> heuristicScore = new Dictionary<Vector3, int>();
 
@@ -107,7 +139,7 @@ public class Agent : MonoBehaviour
         foreach (Vector3 vertex in validNodes)
         {
             heuristicScore.Add(new KeyValuePair<Vector3, int>(vertex, int.MaxValue));
-            distanceFromStart.Add(new KeyValuePair<Vector3, int>(vertex, int.MaxValue));
+            distanceFromStart.Add(new KeyValuePair<Vector3, int>(vertex, int.MaxValue)); //?
         }
 
         heuristicScore[startPosition] = HeuristicCostEstimate(startPosition, goalPosition, heuristic);
@@ -125,10 +157,7 @@ public class Agent : MonoBehaviour
             // If our current node is the goal then stop
             if (curr == goalPosition)
             {
-                print("A*" + heuristic + ": " + distanceFromStart[goalPosition]);
-                print("A*" + heuristic + " time: " + (Time.realtimeSinceStartup - timeNow).ToString());
-                print(string.Format("A* {0} visits: {1} ({2:F2}%)", heuristic, nodeVisitCount, (nodeVisitCount / (double)walkablePositions.Count) * 100));
-                return goalPosition;
+                return ReconstructPath(_nodeParents, goalPosition);
             }
 
             IList<Vector3> neighbors = GetWalkableNodes(curr);
@@ -136,14 +165,14 @@ public class Agent : MonoBehaviour
             foreach (Vector3 node in neighbors)
             {
                 // Get the distance so far, add it to the distance to the neighbor
-                int currScore = distanceFromStart[curr] /*+ Weight(node)*/;
+                int currScore = distanceFromStart[curr] + Weight(node);
 
                 // If our distance to this neighbor is LESS than another calculated shortest path
                 //    to this neighbor, set a new node parent and update the scores as our current
                 //    best for the path so far.
                 if (currScore < distanceFromStart[node])
                 {
-                    //nodeParents[node] = curr;
+                    _nodeParents[node] = curr;
                     distanceFromStart[node] = currScore;
 
                     int hScore = distanceFromStart[node] + HeuristicCostEstimate(node, goalPosition, heuristic);
@@ -160,31 +189,35 @@ public class Agent : MonoBehaviour
             }
         }
 
-        return startPosition;
+        return new List<Vector3>();
     }
 
-    //int Weight(Vector3 node)
-    //{
-    //    if (obstacles.Keys.Contains(node))
-    //    {
-    //        if (obstacles[node] == "slow")
-    //        {
-    //            return 3;
-    //        }
-    //        else if (obstacles[node] == "verySlow")
-    //        {
-    //            return 5;
-    //        }
-    //        else
-    //        {
-    //            return 1;
-    //        }
-    //    }
-    //    else
-    //    {
-    //        return 1;
-    //    }
-    //}
+    List<Vector3> ReconstructPath(Dictionary<Vector3, Vector3> nodeParents, Vector3 goalPosition)
+    {
+        Vector3 current = goalPosition;
+
+        while (nodeParents.ContainsKey(current))
+        {
+            _currentPathFound.Add(current);
+            current = nodeParents[current];
+        }
+
+        _currentPathFound.Reverse(); // Reverse list order
+
+        return _currentPathFound;
+    }
+
+    private int Weight(Vector3 node)
+    {
+        if (_obstacles.Keys.Contains(node))
+        {
+            return _obstacles[node];
+        }
+        else
+        {
+            return 1;
+        }
+    }
 
     IList<Vector3> GetWalkableNodes(Vector3 curr)
     {
@@ -212,8 +245,33 @@ public class Agent : MonoBehaviour
 
         return walkableNodes;
     }
+
     bool CanMove(Vector3 nextPosition)
     {
-        return (walkablePositions.ContainsKey(nextPosition) ? walkablePositions[nextPosition] : false);
+        return (_walkablePositions.ContainsKey(nextPosition) ? _walkablePositions[nextPosition] : false);
+    }
+
+    public void UpdateWalkableObstacles(Dictionary<Vector3, GridCell> cells)
+    {
+        foreach (var cell in cells)
+        {
+            if (!_walkablePositions.ContainsKey(cell.Key))
+            {
+                _walkablePositions.Add(cell.Key, true);
+            }
+            _walkablePositions[cell.Key] = cell.Value.Walkable;
+
+            if (!_walkablePositions.ContainsKey(cell.Key))
+            {
+                _walkablePositions.Add(cell.Key, true);
+            }
+            _walkablePositions[cell.Key] = cell.Value.Walkable;
+
+            if (!_obstacles.ContainsKey(cell.Key))
+            {
+                _obstacles.Add(cell.Key, 1);
+            }
+            _obstacles[cell.Key] = cell.Value.ObstacleLevel;
+        }
     }
 }

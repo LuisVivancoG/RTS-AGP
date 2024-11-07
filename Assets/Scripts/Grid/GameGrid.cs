@@ -1,7 +1,6 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
 
 public class GameGrid
 {
@@ -11,14 +10,50 @@ public class GameGrid
     public int Height => _height;
     public int CellSize => _cellSize;
 
-    private Dictionary<Vector2, GridCell> _grid = new();
+    private Dictionary<Vector3, GridCell> _grid = new();
     public int CellCount => _grid.Count;
 
-    public GameGrid(int mapWidth, int mapHeight, int cellSize, GameManager gameManager)
+    private float _cellTickTimer = 0f;
+    private float _cellTickRate;
+
+    private GameManager _gameManager;
+    public GameManager Manager => _gameManager;
+
+    private Pathfinder _pathfinder;
+    public Pathfinder Pathfinder => _pathfinder;
+
+    public GameGrid(int mapWidth, int mapHeight, int cellSize, float tickRate, GameManager gameManager)
     {
         _width = mapWidth;
         _height = mapHeight;
         _cellSize = cellSize;
+        _cellTickRate = tickRate;
+        _gameManager = gameManager;
+        GenerateGrid();
+        _pathfinder = new Pathfinder(this, _grid);
+    }
+
+    private void GenerateGrid()
+    {
+        int w = _width;
+        int h = _height;
+        int size = _cellSize;
+        float halfSize = size / 2f;
+
+        float posX = 0 - ((w * size) + halfSize);
+        for (int i = -w; i <= w + 1; i++)
+        {
+            float posZ = 0 - ((h * size) + halfSize);
+            for (int j = -h; j <= h + 1; j++)
+            {
+                posZ += size;
+
+                var cellId = new Vector3Int(i, 0, j);
+
+                _grid.Add(cellId, new GridCell(this));
+            }
+            posX += size;
+        }
     }
 
     public Vector3 ClampToCellBounds(Vector3 posToClamp)
@@ -46,11 +81,11 @@ public class GameGrid
         {
             return;
         }
-        var cellId = new Vector2Int(cellX, cellZ);
+        var cellId = new Vector3Int(cellX, 0, cellZ);
 
         if (!_grid.ContainsKey(cellId))
         {
-            _grid.Add(cellId, new GridCell());
+            _grid.Add(cellId, new GridCell(this));
         }
 
         _grid[cellId].AddUnitToCell(unit);
@@ -88,12 +123,12 @@ public class GameGrid
         int cellX = (int)(currentPosition.x / _cellSize);
         int cellZ = (int)(currentPosition.z / _cellSize);
 
-        var cellId = new Vector2Int(cellX, cellZ);
+        var cellId = new Vector3Int(cellX, 0, cellZ);
 
         // validate this cell has even been registered
         if (!_grid.ContainsKey(cellId))
         {
-            _grid.Add(cellId, new GridCell());
+            _grid.Add(cellId, new GridCell(this));
             return null;
         }
 

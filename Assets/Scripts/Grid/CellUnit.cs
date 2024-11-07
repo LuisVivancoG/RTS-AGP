@@ -1,6 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class CellUnit : MonoBehaviour
 {
@@ -16,11 +16,20 @@ public class CellUnit : MonoBehaviour
     private Vector3 _previousPosition;
     private GameGrid _grid;
 
+    private int _health = 20;
+
+    public void ChangeHealth(int change)
+    {
+        _health += change;
+        // todo death check
+    }
+
     public void Setup(int faction, int unitCounter, GameGrid gameGrid)
     {
         _faction = faction;
         name = $"P{faction}_{name}_{unitCounter}";
         _grid = gameGrid;
+        GetNewRandomTarget();
     }
 
     public void SetCell(GridCell gridCell)
@@ -37,7 +46,7 @@ public class CellUnit : MonoBehaviour
 
         _previousPosition = transform.position;
 
-        if ((transform.position - _moveTarget).magnitude < 1f)
+        if ((transform.position - _moveTarget).magnitude < 10f)
         {
             GetNewRandomTarget();
         }
@@ -48,19 +57,8 @@ public class CellUnit : MonoBehaviour
         int mapWidth = _grid.Width * _grid.CellSize;
         int mapHeight = _grid.Height * _grid.CellSize;
 
-        _moveTarget = new Vector3(Random.Range(-mapWidth, mapWidth), 5f, Random.Range(-mapHeight, mapHeight));
+        _moveTarget = new Vector3(Random.Range(-mapWidth, mapWidth), transform.position.y, Random.Range(-mapHeight, mapHeight));
 
         transform.rotation = Quaternion.LookRotation(_moveTarget - transform.position);
-    }
-
-    public void MoveToEnemy(CellUnit otherUnit)
-    {
-        transform.rotation = Quaternion.LookRotation(otherUnit.transform.position - transform.position);
-
-        transform.Translate(Vector3.forward * Time.deltaTime * _moveSpeed);
-
-        _grid.UpdateUnitCell(this, _previousPosition);
-
-        _previousPosition = transform.position;
     }
 }
