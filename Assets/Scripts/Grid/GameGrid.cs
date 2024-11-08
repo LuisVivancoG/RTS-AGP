@@ -153,4 +153,137 @@ public class GameGrid
         return closestEnemy;
         // we could also check the surrounding grid cells
     }
+    public Vector2 CellIdFromPosition(Vector3 position)
+    {
+        Vector3 currentPosition = ClampToCellBounds(position);
+
+        int cellX = (int)(currentPosition.x / _cellSize);
+        int cellZ = (int)(currentPosition.z / _cellSize);
+
+        return new Vector2Int(cellX, cellZ);
+    }
+
+    public Vector3 GetCellPositionFromId(Vector2 cellId)
+    {
+        int cellX = (int)(cellId.x * _cellSize);
+        int cellZ = (int)(cellId.y * _cellSize);
+
+        return new Vector3(cellX, 0, cellZ);
+    }
+
+    public PlacedBuildingBase FindClosestEnemySpawnBuilding(CellUnit unitSearching)
+    {
+        PlacedBuildingBase closestEnemySpawnBuilding = null;
+
+        float smallestDistance = Mathf.Infinity;
+
+        // todo, optimize to check a list of buildings instead of the entire grid
+        foreach (var cell in _grid)
+        {
+            var building = cell.Value.BuildingInCell;
+            if (building != null &&
+                building is TownHall &&
+                building.GetFaction() != unitSearching.Faction)
+            {
+                float distSqr = (building.transform.position - unitSearching.transform.position).sqrMagnitude;
+
+                if (distSqr < smallestDistance)
+                {
+                    smallestDistance = distSqr;
+                    closestEnemySpawnBuilding = building;
+                }
+            }
+        }
+        return closestEnemySpawnBuilding;
+    }
+
+    public void OnUpdate()
+    {
+        _cellTickTimer += Time.deltaTime;
+
+        if (_cellTickTimer >= _cellTickRate)
+        {
+            _cellTickTimer = 0f;
+            TickAllGrids();
+        }
+    }
+
+    private void TickAllGrids()
+    {
+        foreach (GridCell grid in _grid.Values)
+        {
+            grid.OnTick();
+        }
+    }
+
+    private GridCell GetCellAtPosition(Vector3 position)
+    {
+        Vector3 currentPosition = ClampToCellBounds(position);
+
+        int cellX = (int)(currentPosition.x / _cellSize);
+        int cellZ = (int)(currentPosition.z / _cellSize);
+
+        var cellId = new Vector3Int(cellX, 0, cellZ);
+
+        // validate this cell has even been registered
+        if (!_grid.ContainsKey(cellId))
+        {
+            _grid.Add(cellId, new GridCell(this));
+        }
+        return _grid[cellId];
+    }
+
+    public List<GridCell> GetCellsAroundPosition(Vector3 position, int range)
+    {
+        List<GridCell> cells = new();
+
+        Vector3 centeredPosition = ClampToCellBounds(position);
+
+        int cellX = (int)(centeredPosition.x / _cellSize);
+        int cellZ = (int)(centeredPosition.z / _cellSize);
+
+        int minX = Mathf.Clamp(cellX - range, -Width, Width);
+        int maxX = Mathf.Clamp(cellX + range, minX, Width);
+        int minZ = Mathf.Clamp(cellZ - range, -Height, Height);
+        int maxZ = Mathf.Clamp(cellZ + range, minZ, Height);
+
+        Debug.Log($"Getting cells between: {minX} to {maxX} horizontal and {minZ} to {maxZ} vertical");
+        for (int x = minX; x <= maxX; x++)
+        {
+            for (int z = minZ; z <= maxZ; z++)
+            {
+                var cellId = new Vector2(x, z);
+
+                if (!_grid.ContainsKey(cellId))
+                {
+                    _grid.Add(cellId, new GridCell(this));
+                }
+
+                if (!cells.Contains(_grid[cellId]))
+                {
+                    cells.Add(GetCellAtPosition(cellId));
+                }
+            }
+        }
+
+        return cells;
+    }
+
+    public Vector3 FindClosestEnemySpawnBuilding()
+    {
+        // todo get the list of all enemy spawn building from each factions BuildingManager 
+
+        // todo get the edge of the building (the cell it occupies)
+        return Vector3.zero;
+    }
+
+    public LinkedList<PathNode> FindPath(Vector3 StartPosition, Vector3 EndPosition)
+    {
+        // todo loop through the nodes along the path and try to find the least cost path to our objective
+
+        // todo if our objective is blocked, find the least cost path and start destroying buildings in our way!
+
+        // todo not here - When we are moving along the path, if we encounter enemy units, fight them first!
+        return new LinkedList<PathNode>();
+    }
 }

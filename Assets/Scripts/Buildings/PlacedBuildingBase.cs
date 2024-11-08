@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PlacedBuildingBase : MonoBehaviour
@@ -9,17 +10,24 @@ public class PlacedBuildingBase : MonoBehaviour
 
     private int _buildingLvl;
 
+    protected PlayerBuildingsManager Manager;
+    protected Player Owner;
+
     private void Start()
     {
         _currentHP = _scriptedObjectData.MaxHp[0];
         _buildingLvl = 1;
     }
-
-    public void GetBuildingFromPool()
+    public void SetManager(PlayerBuildingsManager manager, ref Action onTick, Player owner)
     {
-
+        Manager = manager;
+        onTick += Tick;
+        Owner = owner;
     }
-
+    public int GetFaction()
+    {
+        return Owner.PlayerFaction;
+    }
     public void CalculateDamage(int damageReceived)
     {
         damageReceived -= _scriptedObjectData.Armor;
@@ -34,5 +42,11 @@ public class PlacedBuildingBase : MonoBehaviour
     {
         _scriptedObjectData.CanLevelUp(_buildingLvl);
     }
+    protected virtual void Tick()
+    {
+
+    }
+    public virtual void OnPlaced() { }
+    public virtual void OnRemoved() { }
 }
 

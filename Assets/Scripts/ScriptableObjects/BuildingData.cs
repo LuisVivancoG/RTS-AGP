@@ -10,6 +10,7 @@ public class BuildingData : ScriptableObject
     [SerializeField] private PlacedBuildingBase _buildingPlacedPrefab;
     [SerializeField] private Sprite _buildingSprite;
     [SerializeField] private BuildingType _kindOfStructure;
+    [SerializeField] private string _buildingName;
 
     public int[] MaxHp => _maxHp;
     public int Armor => _armor;

@@ -18,33 +18,23 @@ public class UnitsManager : MonoBehaviour
         RaycastHit hitInfo;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //Cast a ray from camera that updates with mouse position
 
-        bool canMove = Physics.Raycast(ray, out hitInfo, 10000, _groundMask);
-
-        if (Input.GetMouseButtonDown(2))
+        bool onGround = Physics.Raycast(ray, out hitInfo, 10000, _groundMask);
+        
+        if (Input.GetMouseButtonDown(0) && onGround)
         {
-            _gameManager.GameGrid.Pathfinder.StatusCheck();
-        }
-
-            if (Input.GetMouseButtonDown(0) && canMove)
-        {
-            Debug.Log("raycast hit layer");
             Vector3 positionClicked = hitInfo.point;
-            _gameManager.GameGrid.Pathfinder.FindShortestPathAStar(_unitsPosition.transform.position, positionClicked, "manhattan");
-            _gameManager.GameGrid.Pathfinder._currentPathIndex = 0;
+            IList<Vector3> path = _gameManager.GameGrid.Pathfinder.FindShortestPath(Pathfinder.PathfindingType.AStarManhattan, _unitsPosition.transform.position, positionClicked);
 
-            Debug.Log("CurrentPathIndex:  " + _gameManager.GameGrid.Pathfinder._currentPathIndex + " - " + "PathFound.Count:  " + _gameManager.GameGrid.Pathfinder._currentPathFound.Count);
-        }
-        if (_gameManager.GameGrid.Pathfinder._currentPathFound != null && _gameManager.GameGrid.Pathfinder._currentPathIndex < _gameManager.GameGrid.Pathfinder._currentPathFound.Count) //if there is a path set and the unit hasn't reach it yet then move
-        {
-            Debug.Log("proceeed to move unit");
-            Vector3 targetPos = _gameManager.GameGrid.Pathfinder._currentPathFound[_gameManager.GameGrid.Pathfinder._currentPathIndex];
-            _unitsPosition.transform.position = Vector3.MoveTowards(_unitsPosition.transform.position, targetPos, _moveSpeed * Time.deltaTime);
+            //Debug.Log("PathFound.Count:  " + path.Count);
 
-            if (Vector3.Distance(_unitsPosition.transform.position, targetPos) < 0.1f)
+            for (int i = 0; i < path.Count; i++)
             {
-                _gameManager.GameGrid.Pathfinder._currentPathIndex++;
+                Debug.Log("proceeed to move unit");
+                Vector3 targetPos = path[i];
+                _unitsPosition.transform.position = Vector3.MoveTowards(_unitsPosition.transform.position, targetPos, _moveSpeed * Time.deltaTime);
             }
         }
+        
     }
 
     internal void SetGameManager(GameManager gameManager)

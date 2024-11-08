@@ -6,8 +6,8 @@ using UnityEngine;
 public class Player
 {
     private int _playerIndex;
-    private int _playerTeam;
-    public int PlayerTeam => _playerTeam;
+    private int _playerFaction;
+    public int PlayerFaction => _playerFaction;
 
     private float _storedFood;
     private PlayerBuildingsManager _buildingManager;
@@ -19,7 +19,7 @@ public class Player
     public Player(int playerIndex, int playerFaction, GameManager gameManager)
     {
         _playerIndex = playerIndex;
-        _playerTeam = playerFaction;
+        _playerFaction = playerFaction;
         _storedFood = 0;
 
         _buildingManager = new PlayerBuildingsManager(this, gameManager);
