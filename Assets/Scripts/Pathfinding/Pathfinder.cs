@@ -3,24 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using Priority_Queue;
 
-public class Pathfinder
+public class Pathfinder //Algorithm that returns a list of nodes/vectors to make a path between two given locations
 {
-    public Pathfinder(GameGrid grid, Dictionary<Vector3, GridCell> cells)
+    public Pathfinder(GameGrid grid, Dictionary<Vector2, GridCell> cells)
     {
-        _nodeParents = new Dictionary<Vector3, Vector3>();
-        WalkablePositions = new Dictionary<Vector3, bool>();
-        Obstacles = new Dictionary<Vector3, int>();
+        _nodeParents = new Dictionary<Vector2, Vector2>();
+        WalkablePositions = new Dictionary<Vector2, bool>();
+        Obstacles = new Dictionary<Vector2, int>();
         _grid = grid;
         UpdateWalkableObstacles(cells);
     }
 
-    public IDictionary<Vector3, bool> WalkablePositions;
-    public IDictionary<Vector3, int> Obstacles;
+    public IDictionary<Vector2, bool> WalkablePositions;
+    public IDictionary<Vector2, int> Obstacles;
 
-    Dictionary<Vector3, Vector3> _nodeParents;
+    IDictionary<Vector2, Vector2> _nodeParents;
     private GameGrid _grid;
 
-    public void UpdateWalkableObstacles(Dictionary<Vector3, GridCell> cells)
+    public void UpdateWalkableObstacles(Dictionary<Vector2, GridCell> cells)
     {
         foreach (var cell in cells)
         {
@@ -43,27 +43,31 @@ public class Pathfinder
             Obstacles[cell.Key] = cell.Value.ObstacleLevel;
         }
     }
-    bool CanMove(Vector3 nextPosition)
+    public void UpdateCellAfterbuildingPlaced(Vector2 pos, bool bWalkable)
+    {
+        WalkablePositions[pos] = bWalkable;
+    }
+
+    bool CanMove(Vector2 nextPosition)
     {
         return (WalkablePositions.ContainsKey(nextPosition) ? WalkablePositions[nextPosition] : false);
     }
-    IList<Vector3> GetWalkableNodes(Vector3 curr)
+    IList<Vector2> GetWalkableNodes(Vector2 curr)
     {
+        IList<Vector2> walkableNodes = new List<Vector2>();
 
-        IList<Vector3> walkableNodes = new List<Vector3>();
-
-        IList<Vector3> possibleNodes = new List<Vector3>() {
-        new Vector3 (curr.x + 1, curr.y, curr.z),
-        new Vector3 (curr.x - 1, curr.y, curr.z),
-        new Vector3 (curr.x, curr.y, curr.z + 1),
-        new Vector3 (curr.x, curr.y, curr.z - 1),
-        new Vector3 (curr.x + 1, curr.y, curr.z + 1),
-        new Vector3 (curr.x + 1, curr.y, curr.z - 1),
-        new Vector3 (curr.x - 1, curr.y, curr.z + 1),
-        new Vector3 (curr.x - 1, curr.y, curr.z - 1)
+        IList<Vector2> possibleNodes = new List<Vector2>() {
+            new Vector2 (curr.x + 1, curr.y),
+            new Vector2 (curr.x - 1, curr.y),
+            new Vector2 (curr.x, curr.y + 1),
+            new Vector2 (curr.x, curr.y - 1),
+            new Vector2 (curr.x + 1, curr.y + 1),
+            new Vector2 (curr.x + 1, curr.y - 1),
+            new Vector2 (curr.x - 1, curr.y + 1),
+            new Vector2 (curr.x - 1, curr.y - 1)
     };
 
-        foreach (Vector3 node in possibleNodes)
+        foreach (Vector2 node in possibleNodes)
         {
             if (CanMove(node))
             {
@@ -73,7 +77,7 @@ public class Pathfinder
 
         return walkableNodes;
     }
-    int HeuristicCostEstimate(Vector3 node, Vector3 goal, string heuristic)
+    int HeuristicCostEstimate(Vector2 node, Vector2 goal, string heuristic)
     {
         switch (heuristic)
         {
@@ -85,19 +89,17 @@ public class Pathfinder
 
         return -1;
     }
-    int EuclideanEstimate(Vector3 node, Vector3 goal)
+    int EuclideanEstimate(Vector2 node, Vector2 goal)
     {
         return (int)Mathf.Sqrt(Mathf.Pow(node.x - goal.x, 2) +
-            Mathf.Pow(node.y - goal.y, 2) +
-            Mathf.Pow(node.z - goal.z, 2));
+            Mathf.Pow(node.y - goal.y, 2));
     }
-    int ManhattanEstimate(Vector3 node, Vector3 goal)
+    int ManhattanEstimate(Vector2 node, Vector2 goal)
     {
         return (int)(Mathf.Abs(node.x - goal.x) +
-            Mathf.Abs(node.y - goal.y) +
-            Mathf.Abs(node.z - goal.z));
+            Mathf.Abs(node.y - goal.y));
     }
-    private int Weight(Vector3 node)
+    private int Weight(Vector2 node)
     {
         if (Obstacles.Keys.Contains(node))
         {
@@ -108,44 +110,94 @@ public class Pathfinder
             return 1;
         }
     }
-    Vector3 FindShortestPathAStar(Vector3 currentPosition, Vector3 goalPosition, string heuristic)
+
+    public IList<Vector2> FindShortestPath(PathfindingType algorithm, Vector3 currentPosition, Vector3 goalPosition)
     {
-        IEnumerable<Vector3> validNodes = WalkablePositions.Where(x => x.Value == true).Select(x => x.Key);
+        Vector2 startCellId = _grid.CellIdFromPosition(currentPosition);
+        Vector2 goalCellid = _grid.CellIdFromPosition(goalPosition);
 
-        IDictionary<Vector3, int> heuristicScore = new Dictionary<Vector3, int>();
-
-        // Represents g(x) or the distance from start to node "x" (Same meaning as in Dijkstra's "distances")
-        IDictionary<Vector3, int> distanceFromStart = new Dictionary<Vector3, int>();
-
-        foreach (Vector3 vertex in validNodes)
+        IList<Vector2> path = new List<Vector2>();
+        Vector2 goal;
+        switch (algorithm)
         {
-            heuristicScore.Add(new KeyValuePair<Vector3, int>(vertex, int.MaxValue));
-            distanceFromStart.Add(new KeyValuePair<Vector3, int>(vertex, int.MaxValue));
+            case PathfindingType.AStarEuclid:
+                goal = FindShortestPathAStar(startCellId, goalCellid, "euclidean");
+                break;
+            default:
+                goal = FindShortestPathAStar(startCellId, goalCellid, "manhattan");
+                break;
         }
 
-        heuristicScore[currentPosition] = HeuristicCostEstimate(currentPosition, goalPosition, heuristic);
-        distanceFromStart[currentPosition] = 0;
+
+        if (goal == startCellId || !_nodeParents.ContainsKey(_nodeParents[goal]))
+        {
+            //No solution was found.
+            return null;
+        }
+
+        Vector2 curr = goal;
+        while (curr != startCellId)
+        {
+            path.Add(curr);
+            curr = _nodeParents[curr];
+        }
+
+        return path;
+    }
+
+    Vector2 FindShortestPathAStar(Vector2 startPosition, Vector2 goalPosition, string heuristic)
+    {
+
+        uint nodeVisitCount = 0;
+        float timeNow = Time.realtimeSinceStartup;
+
+        // A* tries to minimize f(x) = g(x) + h(x), where g(x) is the distance from the start to node "x" and
+        //    h(x) is some heuristic that must be admissible, meaning it never overestimates the cost to the next node.
+        //    There are formal logical proofs you can look up that determine how heuristics are and are not admissible.
+
+        IEnumerable<Vector2> validNodes = WalkablePositions
+            .Where(x => x.Value == true)
+            .Select(x => x.Key);
+
+        // Represents h(x) or the score from whatever heuristic we're using
+        IDictionary<Vector2, int> heuristicScore = new Dictionary<Vector2, int>();
+
+        // Represents g(x) or the distance from start to node "x" (Same meaning as in Dijkstra's "distances")
+        IDictionary<Vector2, int> distanceFromStart = new Dictionary<Vector2, int>();
+
+        foreach (Vector2 vertex in validNodes)
+        {
+            heuristicScore.Add(new KeyValuePair<Vector2, int>(vertex, int.MaxValue));
+            distanceFromStart.Add(new KeyValuePair<Vector2, int>(vertex, int.MaxValue));
+        }
+
+        heuristicScore[startPosition] = HeuristicCostEstimate(startPosition, goalPosition, heuristic);
+        distanceFromStart[startPosition] = 0;
 
         // The item dequeued from a priority queue will always be the one with the lowest int value
         //    In this case we will input nodes with their calculated distances from the start g(x),
         //    so we will always take the node with the lowest distance from the queue.
-        SimplePriorityQueue<Vector3, int> priorityQueue = new SimplePriorityQueue<Vector3, int>();
-        priorityQueue.Enqueue(currentPosition, heuristicScore[currentPosition]);
+        SimplePriorityQueue<Vector2, int> priorityQueue = new SimplePriorityQueue<Vector2, int>();
+        priorityQueue.Enqueue(startPosition, heuristicScore[startPosition]);
 
         while (priorityQueue.Count > 0)
         {
             // Get the node with the least distance from the start
-            Vector3 curr = priorityQueue.Dequeue();
+            Vector2 curr = priorityQueue.Dequeue();
+            nodeVisitCount++;
 
             // If our current node is the goal then stop
             if (curr == goalPosition)
             {
+                //Debug.Log("A*" + heuristic + ": " + distanceFromStart[goalPosition]);
+                //Debug.Log("A*" + heuristic + " time: " + (Time.realtimeSinceStartup - timeNow).ToString());
+                //Debug.Log(string.Format("A* {0} visits: {1} ({2:F2}%)", heuristic, nodeVisitCount, (nodeVisitCount / (double)walkablePositions.Count) * 100));
                 return goalPosition;
             }
 
-            IList<Vector3> neighbors = GetWalkableNodes(curr);
+            IList<Vector2> neighbors = GetWalkableNodes(curr);
 
-            foreach (Vector3 node in neighbors)
+            foreach (Vector2 node in neighbors)
             {
                 // Get the distance so far, add it to the distance to the neighbor
                 int currScore = distanceFromStart[curr] + Weight(node);
@@ -171,39 +223,8 @@ public class Pathfinder
                 }
             }
         }
-        return currentPosition;
-    }
 
-    public IList<Vector3> FindShortestPath(PathfindingType algorithm, Vector3 startPos, Vector3 objective)
-    {
-        Vector3 startCellId = _grid.CellIdFromPosition(startPos);
-        Vector3 goalCellId = _grid.CellIdFromPosition(objective);
-
-        IList<Vector3> path = new List<Vector3>();
-        Vector3 goal;
-
-        switch (algorithm)
-        {
-            case PathfindingType.AStarEuclid:
-                goal = FindShortestPathAStar(startCellId, goalCellId, "euclidean");
-                break;
-            default:
-                goal = FindShortestPathAStar(startCellId, goalCellId, "manhattan");
-                break;
-        }
-
-        if (goal == startCellId || !_nodeParents.ContainsKey(_nodeParents[goal]))
-        {
-            return null;
-        }
-
-        Vector3 curr = goal;
-        while (curr != startPos)
-        {
-            path.Add(curr);
-            curr = _nodeParents[curr];
-        }
-        return path;
+        return startPosition;
     }
 
     public enum PathfindingType

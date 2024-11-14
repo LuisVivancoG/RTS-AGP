@@ -90,6 +90,7 @@ public class BuildingPlacementManager : MonoBehaviour
             if (Input.GetMouseButtonDown(0))
             {
                 PlaceBuilding(pos);
+                //var cellIdBlocked = _gameManager.GameGrid.CellIdFromPosition(pos);
 
                 _buildingToPlace = null;
                 _placementGhost.SetActive(false);
@@ -157,6 +158,11 @@ public class BuildingPlacementManager : MonoBehaviour
             
             building.transform.position = loc;
             _localPlayerBuildingManager.AddBuilding(building);
+            var cellsCovered = _gameManager.GameGrid.GetCellsAroundPosition(loc, building._buildingData.BuildingSize);
+            foreach (var cell in cellsCovered)
+            {
+                cell.AddBuildingToCell(building);
+            }
 
             _placedParticles.transform.position = loc;
             _placedParticles.Play();
@@ -179,6 +185,24 @@ public class BuildingPlacementManager : MonoBehaviour
     internal void SetGameManager(GameManager gameManager)
     {
         _gameManager = gameManager;
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (_gameManager != null && _gameManager.GameGrid != null)
+        {
+            Gizmos.color = Color.yellow;
+
+            RaycastHit hitInfo;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.Raycast(ray, out hitInfo, 20000, _groundMask))
+            {
+                var pos = _gameManager.GameGrid.GetCellWorldCenter(hitInfo.point);
+
+                Gizmos.DrawWireCube(pos, Vector3.one * _gameManager.GameGrid.CellSize);
+            }
+        }
     }
 }
 

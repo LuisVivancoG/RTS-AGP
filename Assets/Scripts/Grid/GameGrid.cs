@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameGrid
+public class GameGrid //GameGrid is in charge of drawing the grid and make operations to convert Unity vectors into grid generated.
+                      //Use this only for things related to grid cells checks
 {
 
     private int _width, _height, _cellSize;
@@ -10,7 +11,7 @@ public class GameGrid
     public int Height => _height;
     public int CellSize => _cellSize;
 
-    private Dictionary<Vector3, GridCell> _grid = new();
+    private Dictionary<Vector2, GridCell> _grid = new();
     public int CellCount => _grid.Count;
 
     private float _cellTickTimer = 0f;
@@ -48,7 +49,7 @@ public class GameGrid
             {
                 posZ += size;
 
-                var cellId = new Vector3Int(i, 0, j);
+                var cellId = new Vector2Int(i, j);
 
                 _grid.Add(cellId, new GridCell(this));
             }
@@ -81,7 +82,7 @@ public class GameGrid
         {
             return;
         }
-        var cellId = new Vector3Int(cellX, 0, cellZ);
+        var cellId = new Vector2Int(cellX, cellZ);
 
         if (!_grid.ContainsKey(cellId))
         {
@@ -123,7 +124,7 @@ public class GameGrid
         int cellX = (int)(currentPosition.x / _cellSize);
         int cellZ = (int)(currentPosition.z / _cellSize);
 
-        var cellId = new Vector3Int(cellX, 0, cellZ);
+        var cellId = new Vector2Int(cellX, cellZ);
 
         // validate this cell has even been registered
         if (!_grid.ContainsKey(cellId))
@@ -153,6 +154,7 @@ public class GameGrid
         return closestEnemy;
         // we could also check the surrounding grid cells
     }
+
     public Vector2 CellIdFromPosition(Vector3 position)
     {
         Vector3 currentPosition = ClampToCellBounds(position);
@@ -210,10 +212,10 @@ public class GameGrid
 
     private void TickAllGrids()
     {
-        foreach (GridCell grid in _grid.Values)
+        /*foreach (GridCell grid in _grid.Values)
         {
             grid.OnTick();
-        }
+        }*/
     }
 
     private GridCell GetCellAtPosition(Vector3 position)
@@ -223,7 +225,7 @@ public class GameGrid
         int cellX = (int)(currentPosition.x / _cellSize);
         int cellZ = (int)(currentPosition.z / _cellSize);
 
-        var cellId = new Vector3Int(cellX, 0, cellZ);
+        var cellId = new Vector2Int(cellX, cellZ);
 
         // validate this cell has even been registered
         if (!_grid.ContainsKey(cellId))

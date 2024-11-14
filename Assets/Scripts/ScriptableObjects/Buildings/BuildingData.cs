@@ -11,9 +11,14 @@ public class BuildingData : ScriptableObject
     [SerializeField] private Sprite _buildingSprite;
     [SerializeField] private BuildingType _kindOfStructure;
     [SerializeField] private string _buildingName;
+    [SerializeField] private int _buildingSize;
+    [SerializeField] private int _obstacleLevel;
+
 
     public int[] MaxHp => _maxHp;
     public int Armor => _armor;
+    public int BuildingSize => _buildingSize;
+    public int ObstacleLevel => _obstacleLevel;
     public GameObject BuildingGhostPrefab => _buildingGhostPrefab;
     public PlacedBuildingBase BuildingPlacedPrefab => _buildingPlacedPrefab;
     public Sprite BuildingSprite => _buildingSprite;

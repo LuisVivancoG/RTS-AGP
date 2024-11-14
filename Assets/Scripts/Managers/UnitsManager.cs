@@ -1,44 +1,110 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UnitsManager : MonoBehaviour
+public class UnitsManager : MonoBehaviour //This manager gives orders to the units defined by UnitselectionSystem.
+                                          //Between its functions are: generate units on demand, establishes priority of base state machine and
+                                          //override FSM by assigning new pathfinding or forcing to stay still.
 {
-    private GameManager _gameManager;
+    public GameManager _gameManager { get; private set;}
 
-    [SerializeField] private GameObject _unitsPosition;
-    [SerializeField] private Vector3 _objectivePosition;
-
-    [SerializeField] private float _moveSpeed;
-
-    [SerializeField] private LayerMask _groundMask;
+    [SerializeField] private int _unitsSpawned;
+    [SerializeField] private CellUnit _unitToSpawnA;
+    [SerializeField] private CellUnit _unitToSpawnB;
+    [SerializeField] private GameObject _spawner; //TODO replace spawner with Army camps position and update GenerateUnits method to use that position
+    [SerializeField] private List<CellUnit> _unitsListA = new();
+    [SerializeField] private List<CellUnit> _unitsListB = new();
 
     private void Update()
     {
-        RaycastHit hitInfo;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //Cast a ray from camera that updates with mouse position
-
-        bool onGround = Physics.Raycast(ray, out hitInfo, 10000, _groundMask);
-        
-        if (Input.GetMouseButtonDown(0) && onGround)
+        if (_unitsListB.Count > 0)
         {
-            Vector3 positionClicked = hitInfo.point;
-            IList<Vector3> path = _gameManager.GameGrid.Pathfinder.FindShortestPath(Pathfinder.PathfindingType.AStarManhattan, _unitsPosition.transform.position, positionClicked);
-
-            //Debug.Log("PathFound.Count:  " + path.Count);
-
-            for (int i = 0; i < path.Count; i++)
+            foreach (CellUnit unit in _unitsListB)
             {
-                Debug.Log("proceeed to move unit");
-                Vector3 targetPos = path[i];
-                _unitsPosition.transform.position = Vector3.MoveTowards(_unitsPosition.transform.position, targetPos, _moveSpeed * Time.deltaTime);
+                if (BuildingCheck(unit)) continue;
+                if (EnemyCheck(unit)) continue;
+                unit.RandomMove();
             }
         }
-        
+
+        //if (_unitsListA.Count > 0)
+        //{
+        //    foreach (CellUnit unit in _unitsListA)
+        //    {
+        //        if (BuildingCheck(unit)) continue;
+        //        if (EnemyCheck(unit)) continue;
+        //        // if none, patrol randomly
+        //        unit.RandomMove();
+        //    }
+        //}
     }
 
     internal void SetGameManager(GameManager gameManager)
     {
         _gameManager = gameManager;
+        GenerateUnits(1, _unitToSpawnA, _spawner, ref _unitsListA);
+        GenerateUnits(2, _unitToSpawnB, _spawner, ref _unitsListB);
+    }
+
+    private void GenerateUnits(int faction, CellUnit data, GameObject spawner, ref List<CellUnit> list)
+    {
+        if(faction != 1)
+        {
+            int mapWidth = _gameManager.GameGrid.Width * _gameManager.GameGrid.CellSize;
+            int mapHeight = _gameManager.GameGrid.Height * _gameManager.GameGrid.CellSize;
+
+            for (int i = 0; i < _unitsSpawned; i++)
+            {
+                Vector3 randomPos = new Vector3(Random.Range(-mapWidth, mapWidth), 0f, Random.Range(-mapHeight, mapHeight));
+
+                CellUnit unitInstance = Instantiate<CellUnit>(data, randomPos, Quaternion.identity, spawner.transform);
+
+                unitInstance.Setup(faction, i, _gameManager.GameGrid);
+
+                list.Add(unitInstance);
+            }
+        }
+        else
+        {
+            var pos = _gameManager.GameGrid.GetCellWorldCenter(spawner.transform.position);
+
+            for (int i = 0; i < _unitsSpawned; i++)
+            {
+                CellUnit unitInstance = Instantiate<CellUnit>(data, pos, Quaternion.identity, spawner.transform);
+
+                unitInstance.Setup(faction, i, _gameManager.GameGrid);
+
+                list.Add(unitInstance);
+            }
+        }
+    }
+
+    private bool EnemyCheck(CellUnit unit)
+    {
+        // Find enemy within vision range (currently, same cell only)
+        CellUnit closestEnemy = _gameManager.GameGrid.FindClosestOtherFactionUnit(unit);
+
+        if (closestEnemy != null)
+        {
+            unit.MoveToEnemy(closestEnemy);
+            return true;
+        }
+        return false;
+    }
+    private bool BuildingCheck(CellUnit unit)
+    {
+        // Find closest enemy spawn building
+        PlacedBuildingBase closestSpawnBuilding = _gameManager.GameGrid.FindClosestEnemySpawnBuilding(unit);
+
+        if (closestSpawnBuilding != null)
+        {
+            unit.MoveToEnemy(closestSpawnBuilding);
+            return true;
+        }
+        return false;
+    }
+    public void LocTarget(CellUnit unitToMove, Vector3 target)
+    {
+        Vector3 cellInGrid = _gameManager.GameGrid.GetCellWorldCenter(target);
+        unitToMove.MoveToTarget(cellInGrid);
     }
 }

@@ -13,6 +13,8 @@ public class PlacedBuildingBase : MonoBehaviour
     protected PlayerBuildingsManager Manager;
     protected Player Owner;
 
+    private bool _isWalkable;
+
     private void Start()
     {
         _currentHP = _scriptedObjectData.MaxHp[0];

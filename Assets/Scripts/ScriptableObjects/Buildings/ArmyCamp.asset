@@ -20,3 +20,6 @@ MonoBehaviour:
     type: 3}
   _buildingSprite: {fileID: 21300000, guid: b5092d92bde62cb4681edb4bf04ffa1e, type: 3}
   _kindOfStructure: 3
+  _buildingName: Camp
+  _buildingSize: 1
+  _obstacleLevel: 2

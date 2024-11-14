@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using UnityEngine;
 
-public class GridCell
+public class GridCell //Helps to track information per cell on the grid. The one in charge of applying damage done by static assets, returns list of rival units,  
 {
     private List<CellUnit> _allUnits = new List<CellUnit>();
     Dictionary<int, Dictionary<string, CellUnit>> _unitsInCellByFaction = new Dictionary<int, Dictionary<string, CellUnit>>();
@@ -62,7 +63,7 @@ public class GridCell
         return factionLists.SelectMany(x => x.Values).ToList();
     }
 
-    public void OnTick()
+    /*public void OnTick()
     {
         // option 1: DamageSystem.DoDamage(source, targets)
 
@@ -71,7 +72,7 @@ public class GridCell
         {
             _parentGrid.Manager.DamageSystem.ChangeHp(this, unit, _netHpChangePerTick);
         }
-    }
+    }*/
 
     public void ModifyHpChangePerTickInCell(int change)
     {
@@ -81,5 +82,9 @@ public class GridCell
     public void AddBuildingToCell(PlacedBuildingBase buildingInCell)
     {
         _buildingInCell = buildingInCell;
+        _isWalkable = false;
+        _obstacleLevel = buildingInCell._buildingData.ObstacleLevel;
+        var cellPos = _parentGrid.CellIdFromPosition(buildingInCell.transform.position);
+        _parentGrid.Pathfinder.UpdateCellAfterbuildingPlaced(cellPos, _isWalkable);
     }
 }

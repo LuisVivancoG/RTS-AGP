@@ -14,18 +14,17 @@ public class GameManager : MonoBehaviour
     private SortedList<int, Player> _playerController = new();
     [SerializeField] private BuildingPlacementManager _placementManager;
     //[SerializeField] private LocalPlayerUI _playerUI;
-    
+
     private GameGrid _gameGrid;
     public GameGrid GameGrid => _gameGrid;
 
-    private DamageSystem _damageSystem;
-    public DamageSystem DamageSystem => _damageSystem;
+    /*private DamageSystem _damageSystem;
+    public DamageSystem DamageSystem => _damageSystem;*/
 
     [SerializeField] private UnitsManager _unitsManager;
     private void Awake()
     {
-        _placementManager.SetGameManager(this);
-        _unitsManager.SetGameManager(this);
+        _gameGrid = new GameGrid(GridWidth, GridHeight, GridCellSize, CellTickRate, this);
 
         for (int i=0; i<_playerCount; i++)
         {
@@ -38,13 +37,13 @@ public class GameManager : MonoBehaviour
             }
         }
         //Debug.Log(GameGrid.Pathfinder._walkablePositions.Count);
-        _gameGrid = new GameGrid(GridWidth, GridHeight, GridCellSize, CellTickRate, this);
         //Debug.Log(GameGrid.Pathfinder._walkablePositions.Count);
     }
 
     private void Start()
     {
-        //Debug.Log(_playerController.Count);
+        _placementManager.SetGameManager(this);
+        _unitsManager.SetGameManager(this);
     }
     private void Update()
     {
@@ -53,19 +52,22 @@ public class GameManager : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.red;
-        float halfSize = GridCellSize / 2f;
-
-        float posX = 0 - ((GridWidth * GridCellSize) + halfSize);
-        for (int i = -GridWidth; i <= GridWidth + 1; i++)
+        if (_gameGrid != null)
         {
-            float posZ = 0 - ((GridHeight * GridCellSize) + halfSize);
-            for (int j = -GridHeight; j <= GridHeight + 1; j++)
+            Gizmos.color = Color.gray;
+            float halfSize = GridCellSize / 2f;
+
+            float posX = 0 - ((GridWidth * GridCellSize) + halfSize);
+            for (int i = -GridWidth; i <= GridWidth + 1; i++)
             {
-                posZ += GridCellSize;
-                Gizmos.DrawWireCube((new Vector3(posX, 0, posZ)), Vector3.one * GridCellSize);
+                float posZ = 0 - ((GridHeight * GridCellSize) + halfSize);
+                for (int j = -GridHeight; j <= GridHeight + 1; j++)
+                {
+                    posZ += GridCellSize;
+                    Gizmos.DrawWireCube((new Vector3(posX, halfSize, posZ)), Vector3.one * GridCellSize);
+                }
+                posX += GridCellSize;
             }
-            posX += GridCellSize;
         }
     }
 }
