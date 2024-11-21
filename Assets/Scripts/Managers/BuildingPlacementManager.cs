@@ -31,7 +31,6 @@ public class BuildingPlacementManager : MonoBehaviour
     [SerializeField] private Material _cannotPlaceMaterial;
 
     [Header("Player settings")]
-    [SerializeField] private UIManager _uiManager;
     [SerializeField] private GameManager _gameManager;
     private PlayerBuildingsManager _localPlayerBuildingManager = null;
 

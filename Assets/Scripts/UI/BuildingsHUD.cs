@@ -5,7 +5,6 @@ using UnityEngine;
 public class BuildingsHUD : MonoBehaviour
 {
     [SerializeField] private BuildingPlacementManager _bpm;
-    [SerializeField] private UIManager _uiManager;
 
     public void OnButtonDismantle(PlacedBuildingBase buildingPlaced)
     {
