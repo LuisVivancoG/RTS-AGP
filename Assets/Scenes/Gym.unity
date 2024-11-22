@@ -571,6 +571,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a0b95124004dca4298f1c0791bc92a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _safeZone: {fileID: 1251169353}
   _confirmationDialogPrefab: {fileID: 8673322814733799145, guid: 917c8a22e191fa54082bb620166ad1b2,
     type: 3}
   _buildingOptionsPrefan: {fileID: 3321457714682396697, guid: 9fbbc12e33c9eab49a79b00a1bcc68e8,

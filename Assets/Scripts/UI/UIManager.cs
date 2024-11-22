@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
+    [SerializeField] private GameObject _safeZone;
     [SerializeField] private ConfirmationDialog _confirmationDialogPrefab;
     [SerializeField] private BuildingOptions _buildingOptionsPrefan;
 
@@ -64,7 +65,7 @@ public class UIManager : MonoBehaviour
 
     private DialogBase CreateDialogFromPrefab(DialogBase dialogPrefab)
     {
-        DialogBase created = Instantiate(dialogPrefab , transform);
+        DialogBase created = Instantiate(dialogPrefab , _safeZone.transform);
         created.OnCreation(this);
         return created;
     }
@@ -101,10 +102,5 @@ public class UIManager : MonoBehaviour
         {
             Debug.LogError($"Failed to peek the top dialog");
         }
-    }
-
-    private void ConfirmDismantlePop()
-    {
-        ShowDialog(RTSMenus.ConfirmationDialog);
     }
 }

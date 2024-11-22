@@ -18,12 +18,14 @@ public class ConfirmationDialog : DialogBase
     private Action _onConfirm;
     private Action _onCancel;
 
-    public void Show(string title, string description, string acceptButtonText, string cancelButtonText)
+    public void Show(string title, string description, string acceptButtonText, string cancelButtonText/*, Action onConfirm, Action onCancel*/)
     {
         _titleText.text = title;
         _descriptionText.text = description;
         _acceptButtonText.text = acceptButtonText;
         _cancelButtonText.text = cancelButtonText;
+        /*_onConfirm = onConfirm;
+        _onCancel = onCancel;*/
     }
 
     public void ButtonAccept()
