@@ -106,5 +106,6 @@ public class UnitsManager : MonoBehaviour //This manager gives orders to the uni
     {
         Vector3 cellInGrid = _gameManager.GameGrid.GetCellWorldCenter(target);
         unitToMove.MoveToTarget(cellInGrid);
+        unitToMove.CurrentDestination(cellInGrid);
     }
 }

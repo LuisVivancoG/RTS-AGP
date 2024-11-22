@@ -34,6 +34,8 @@ public class BuildingPlacementManager : MonoBehaviour
     [SerializeField] private GameManager _gameManager;
     private PlayerBuildingsManager _localPlayerBuildingManager = null;
 
+    [SerializeField] private UIManager _uiManager;
+
 
     private void Start()
     {
@@ -170,9 +172,22 @@ public class BuildingPlacementManager : MonoBehaviour
 
     public void BuildingOptions(PlacedBuildingBase buildingPlaced)
     {
-        buildingPlaced.gameObject.SetActive(false);
-        _buildingsPools[buildingPlaced._buildingData.KindOfStructure].Release(buildingPlaced);
-        //todo display a options popup with dismantling and upgrade buttons as well as other data info
+        var dialog = _uiManager.ShowDialog(RTSMenus.BuildingOptions);
+        if(dialog is BuildingOptions options)
+        {
+            options.Show(buildingPlaced._buildingData.name + " Options",
+                "What do you want to do?",
+                "Upgrade",
+                "Dismantle",
+                "Cancel",
+                RemoveBuilding, buildingPlaced);
+        }
+    }
+
+    public void RemoveBuilding(PlacedBuildingBase buildingToRemove)
+    {
+        buildingToRemove.gameObject.SetActive(false);
+        _buildingsPools[buildingToRemove._buildingData.KindOfStructure].Release(buildingToRemove);
     }
 
     internal void SetLocalBuildingManager(PlayerBuildingsManager playerBuildingsManager)

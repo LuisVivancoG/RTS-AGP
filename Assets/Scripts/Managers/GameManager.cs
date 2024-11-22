@@ -13,7 +13,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int _playerCount = 1;
     private SortedList<int, Player> _playerController = new();
     [SerializeField] private BuildingPlacementManager _placementManager;
-    //[SerializeField] private LocalPlayerUI _playerUI;
 
     private GameGrid _gameGrid;
     public GameGrid GameGrid => _gameGrid;
@@ -50,10 +49,10 @@ public class GameManager : MonoBehaviour
         
     }
 
-    private void OnDrawGizmos()
+    /*private void OnDrawGizmos()
     {
-        if (_gameGrid != null)
-        {
+        //if (_gameGrid != null)
+        //{
             Gizmos.color = Color.gray;
             float halfSize = GridCellSize / 2f;
 
@@ -67,7 +66,7 @@ public class GameManager : MonoBehaviour
                     Gizmos.DrawWireCube((new Vector3(posX, halfSize, posZ)), Vector3.one * GridCellSize);
                 }
                 posX += GridCellSize;
-            }
+           // }
         }
-    }
+    }*/
 }

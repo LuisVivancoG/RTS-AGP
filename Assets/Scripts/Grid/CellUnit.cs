@@ -25,6 +25,7 @@ public class CellUnit : MonoBehaviour //this is where units states are defined a
     private GameGrid _grid;
 
     public Queue<Vector3> _pathToFollow { get; private set; }
+    private Vector3 _currentDestination;
 
     private bool _isIdle = true;
 
@@ -33,7 +34,7 @@ public class CellUnit : MonoBehaviour //this is where units states are defined a
     private void Update() //Ask if there is another way and more efficient to make the movement without requiring Update method.
                           //Why MoveToEnemy and RandomMovement work?
     {
-        if (_pathToFollow != null && _pathToFollow.Count > 0)
+        if (_pathToFollow.Count > 0)
         {
             _animController.SetFloat("Velocity", 1);
             Vector3 targetPosition = _pathToFollow.Peek();
@@ -44,12 +45,18 @@ public class CellUnit : MonoBehaviour //this is where units states are defined a
             if (Vector3.Distance(transform.position, targetPosition) < 0.1f)
             {
                 _pathToFollow.Clear();
+                MoveToTarget(_currentDestination);
             }
         }
         else
         {
             _animController.SetFloat("Velocity", 0);
         }
+    }
+
+    public void CurrentDestination(Vector3 target)
+    {
+        _currentDestination = target;
     }
 
     public void ChangeHealth(int change)
@@ -108,7 +115,7 @@ public class CellUnit : MonoBehaviour //this is where units states are defined a
         {
             _pathToFollow.Clear();
             var path = _grid.Pathfinder.FindShortestPath(Pathfinder.PathfindingType.AStarManhattan, transform.position, target);
-
+            Debug.Log("Pathfinder check");
             if (path == null || path.Count == 0)
             {
                 Debug.LogWarning("Failed to find path!");

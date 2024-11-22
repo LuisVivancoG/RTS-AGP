@@ -1,10 +1,6 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class ConfirmationDialog : DialogBase
 {
@@ -19,15 +15,8 @@ public class ConfirmationDialog : DialogBase
         return RTSMenus.ConfirmationDialog;
     }
 
-    private UIManager _manager;
-
     private Action _onConfirm;
     private Action _onCancel;
-
-    public void OnCreation(UIManager manager)
-    {
-        _manager = manager;
-    }
 
     public void Show(string title, string description, string acceptButtonText, string cancelButtonText)
     {
@@ -48,4 +37,9 @@ public class ConfirmationDialog : DialogBase
         _onCancel?.Invoke();
         _manager.HideDialog(MenuType());
     }
+
+    //private void OnConfirmDismantle(PlacedBuildingBase building)
+    //{
+    //    building.OnRemoved;
+    //}
 }

@@ -1,11 +1,10 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
     [SerializeField] private ConfirmationDialog _confirmationDialogPrefab;
+    [SerializeField] private BuildingOptions _buildingOptionsPrefan;
 
     Dictionary<RTSMenus, DialogBase> _dialogInstances = new();
 
@@ -15,12 +14,12 @@ public class UIManager : MonoBehaviour
     private int _topSortingOrder = 0;
     private const int _sortOrderGap = 10;
 
-    public void ShowDialog(RTSMenus dialogType)
+    public DialogBase ShowDialog(RTSMenus dialogType)
     {
-        PushDialog(dialogType);
+        return PushDialog(dialogType);
     }
 
-    public void PushDialog(RTSMenus dialogType)
+    public DialogBase PushDialog(RTSMenus dialogType)
     {
         if (!_dialogInstances.ContainsKey(dialogType))
         {
@@ -29,6 +28,9 @@ public class UIManager : MonoBehaviour
             {
                 case RTSMenus.ConfirmationDialog:
                     created = CreateDialogFromPrefab(_confirmationDialogPrefab);
+                    break;
+                case RTSMenus.BuildingOptions:
+                    created = CreateDialogFromPrefab(_buildingOptionsPrefan);
                     break;
             }
             if (created == null)
@@ -53,14 +55,18 @@ public class UIManager : MonoBehaviour
             }
             _dialogStack.Push(instance);
             instance.gameObject.SetActive(true);
+            instance.DialogCanvas.overrideSorting = true;
             _topSortingOrder += _sortOrderGap;
             instance.DialogCanvas.sortingOrder = _topSortingOrder;
         }
+        return instance;
     }
 
     private DialogBase CreateDialogFromPrefab(DialogBase dialogPrefab)
     {
-        return Instantiate(dialogPrefab , transform); 
+        DialogBase created = Instantiate(dialogPrefab , transform);
+        created.OnCreation(this);
+        return created;
     }
 
     public void HideDialog(RTSMenus dialogType)
@@ -95,5 +101,10 @@ public class UIManager : MonoBehaviour
         {
             Debug.LogError($"Failed to peek the top dialog");
         }
+    }
+
+    private void ConfirmDismantlePop()
+    {
+        ShowDialog(RTSMenus.ConfirmationDialog);
     }
 }

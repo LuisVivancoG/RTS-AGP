@@ -30,12 +30,6 @@ public class Pathfinder //Algorithm that returns a list of nodes/vectors to make
             }
             WalkablePositions[cell.Key] = cell.Value.Walkable;
 
-            if (!WalkablePositions.ContainsKey(cell.Key))
-            {
-                WalkablePositions.Add(cell.Key, true);
-            }
-            WalkablePositions[cell.Key] = cell.Value.Walkable;
-
             if (!Obstacles.ContainsKey(cell.Key))
             {
                 Obstacles.Add(cell.Key, 1);
