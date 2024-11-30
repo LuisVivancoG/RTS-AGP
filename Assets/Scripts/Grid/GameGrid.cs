@@ -157,10 +157,29 @@ public class GameGrid //GameGrid is in charge of drawing the grid and make opera
 
     public Vector2 CellIdFromPosition(Vector3 position)
     {
-        Vector3 currentPosition = ClampToCellBounds(position);
+        Vector3 location = ClampToCellBounds(position);
 
-        int cellX = (int)(currentPosition.x / _cellSize);
-        int cellZ = (int)(currentPosition.z / _cellSize);
+        int cellX;// = (int)(currentPosition.x / _cellSize);
+        int cellZ;// = (int)(currentPosition.z / _cellSize);
+
+        if (location.x < 0)
+        {
+            cellX = Mathf.CeilToInt((location.x / _cellSize));
+        }
+        else
+        {
+            cellX = Mathf.CeilToInt(location.x / _cellSize);
+
+        }
+
+        if (location.z < 0)
+        {
+            cellZ = Mathf.CeilToInt(location.z / _cellSize);
+        }
+        else
+        {
+            cellZ = Mathf.CeilToInt(location.z / _cellSize);
+        }
 
         return new Vector2Int(cellX, cellZ);
     }

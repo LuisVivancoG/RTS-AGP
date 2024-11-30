@@ -14,6 +14,15 @@ public class UnitsManager : MonoBehaviour //This manager gives orders to the uni
     [SerializeField] private List<CellUnit> _unitsListA = new();
     [SerializeField] private List<CellUnit> _unitsListB = new();
 
+    [SerializeField] private GameObject practiceDummy;
+
+    private Vector3 _movementRequest = Vector3.zero;
+
+    private void Start()
+    {
+        
+    }
+
     private void Update()
     {
         if (_unitsListB.Count > 0)
@@ -26,16 +35,30 @@ public class UnitsManager : MonoBehaviour //This manager gives orders to the uni
             }
         }
 
-        //if (_unitsListA.Count > 0)
-        //{
-        //    foreach (CellUnit unit in _unitsListA)
-        //    {
-        //        if (BuildingCheck(unit)) continue;
-        //        if (EnemyCheck(unit)) continue;
-        //        // if none, patrol randomly
-        //        unit.RandomMove();
-        //    }
-        //}
+        if (_unitsListA.Count > 0)
+        {
+            foreach (CellUnit unit in _unitsListA)
+            {
+                //if (BuildingCheck(unit)) continue;
+                //if (EnemyCheck(unit)) continue;
+                // if none, patrol randomly
+                MoveTo(unit);
+            }
+        }
+    }
+
+    public bool CheckSurrounding(CellUnit unit)
+    {
+        
+        if (BuildingCheck(unit) == true)
+        {
+            return BuildingCheck(unit);
+        }
+
+        else
+        {
+            return EnemyCheck(unit);
+        }
     }
 
     internal void SetGameManager(GameManager gameManager)
@@ -104,8 +127,17 @@ public class UnitsManager : MonoBehaviour //This manager gives orders to the uni
     }
     public void LocTarget(CellUnit unitToMove, Vector3 target)
     {
-        Vector3 cellInGrid = _gameManager.GameGrid.GetCellWorldCenter(target);
+        if (unitToMove != null && target != null)
+        {
+            //_movementRequest = target;
+            Vector3 cellInGrid = _gameManager.GameGrid.GetCellWorldCenter(target);
+            unitToMove.MoveToTarget(cellInGrid);
+        }
+    }
+
+    void MoveTo(CellUnit unitToMove)
+    {
+        Vector3 cellInGrid = _gameManager.GameGrid.GetCellWorldCenter(practiceDummy.transform.position);
         unitToMove.MoveToTarget(cellInGrid);
-        unitToMove.CurrentDestination(cellInGrid);
     }
 }

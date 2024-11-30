@@ -226,4 +226,24 @@ public class Pathfinder //Algorithm that returns a list of nodes/vectors to make
         AStarEuclid,
         AStarManhattan
     }
+
+    public void DrawPositions()
+    {
+        if (WalkablePositions == null)
+        {
+            return;
+        }
+
+        for (int b = 0; b < WalkablePositions.Count; b++)
+        {
+            Gizmos.color = Color.red;
+            int size = _grid.CellSize;
+
+            var target = WalkablePositions.ElementAt(b);
+            var node = _grid.GetCellPositionFromId(target.Key);
+            var _moveTarget = _grid.GetCellWorldCenter(node);
+
+            Gizmos.DrawWireCube(_moveTarget, Vector3.one * size);
+        }
+    }
 }

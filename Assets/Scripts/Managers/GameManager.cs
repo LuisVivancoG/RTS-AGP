@@ -44,10 +44,6 @@ public class GameManager : MonoBehaviour
         _placementManager.SetGameManager(this);
         _unitsManager.SetGameManager(this);
     }
-    private void Update()
-    {
-        
-    }
 
     /*private void OnDrawGizmos()
     {

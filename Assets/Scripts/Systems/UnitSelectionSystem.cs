@@ -94,7 +94,7 @@ public class UnitSelectionSystem : Singleton<UnitSelectionSystem> //Helps to kee
             RaycastHit HitInfo;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //Cast a ray from camera that updates with mouse position
 
-            if (Physics.Raycast(ray, out HitInfo, 1000, _groundMask))
+            /*if (Physics.Raycast(ray, out HitInfo, 1000, _groundMask))
             {
                 var pos = _unitsManager._gameManager.GameGrid.GetCellWorldCenter(HitInfo.point);
                 if (_unitsSelected.Count > 0)
@@ -102,10 +102,11 @@ public class UnitSelectionSystem : Singleton<UnitSelectionSystem> //Helps to kee
                     foreach (var unit in _unitsSelected)
                     {
                         _unitsManager.LocTarget(unit, pos);
+                        _unitsManager.CheckSurrounding(unit);
                     }
                 }
                 return;
-            }
+            }*/
         }
     }
 
