@@ -20,11 +20,12 @@ public class Pathfinder //Algorithm that returns a list of nodes/vectors to make
     IDictionary<Vector2, Vector2> _nodeParents;
     private GameGrid _grid;
 
-    public void UpdateWalkableObstacles(Dictionary<Vector2, GridCell> cells)
+    public void UpdateWalkableObstacles(Dictionary<Vector2, GridCell> cells) //on this method each cell from the dictionary passed is registered in the walkablePosition dictionary and the obstacles dictionary.
+                                                                               //Consider separating then in two different functions later
     {
         foreach (var cell in cells)
         {
-            if (!WalkablePositions.ContainsKey(cell.Key))
+            if (!WalkablePositions.ContainsKey(cell.Key)) //if the walkablePosition dictionary does not contain the cell requested already, then add it to the dictionary with a value of true (walkable cell)
             {
                 WalkablePositions.Add(cell.Key, true);
             }
@@ -37,20 +38,22 @@ public class Pathfinder //Algorithm that returns a list of nodes/vectors to make
             Obstacles[cell.Key] = cell.Value.ObstacleLevel;
         }
     }
-    public void UpdateCellAfterbuildingPlaced(Vector2 pos, bool bWalkable)
+    public void UpdateCellAfterbuildingPlaced(Vector2 pos, bool bWalkable) //this function gets an element in the dictionary walkablePositions using the vector2 aka key, and updates the value (its walkable or not).
+                                                                           //Consider adding another line where updates the obstacles dictionary with the desire level of obstacle
     {
         WalkablePositions[pos] = bWalkable;
     }
 
-    bool CanMove(Vector2 nextPosition)
+    bool CanMove(Vector2 nextPosition) //checks if the next position is within walkablePosition dictionary, if it is retures can move else returns cannot move
     {
         return (WalkablePositions.ContainsKey(nextPosition) ? WalkablePositions[nextPosition] : false);
     }
-    IList<Vector2> GetWalkableNodes(Vector2 curr)
+    IList<Vector2> GetWalkableNodes(Vector2 curr) //checks if the 8 nodes around unit are walkable, returns the nodes that are walkable
     {
         IList<Vector2> walkableNodes = new List<Vector2>();
 
-        IList<Vector2> possibleNodes = new List<Vector2>() {
+        IList<Vector2> possibleNodes = new List<Vector2>()
+        {
             new Vector2 (curr.x + 1, curr.y),
             new Vector2 (curr.x - 1, curr.y),
             new Vector2 (curr.x, curr.y + 1),
@@ -59,7 +62,7 @@ public class Pathfinder //Algorithm that returns a list of nodes/vectors to make
             new Vector2 (curr.x + 1, curr.y - 1),
             new Vector2 (curr.x - 1, curr.y + 1),
             new Vector2 (curr.x - 1, curr.y - 1)
-    };
+        };
 
         foreach (Vector2 node in possibleNodes)
         {
@@ -93,7 +96,7 @@ public class Pathfinder //Algorithm that returns a list of nodes/vectors to make
         return (int)(Mathf.Abs(node.x - goal.x) +
             Mathf.Abs(node.y - goal.y));
     }
-    private int Weight(Vector2 node)
+    private int Weight(Vector2 node) //checks if the node requested is withing obstacles dictionary and returns the obstacle level. if it is not inside dictionary, returns basic level which is 1
     {
         if (Obstacles.Keys.Contains(node))
         {
@@ -126,6 +129,7 @@ public class Pathfinder //Algorithm that returns a list of nodes/vectors to make
         if (goal == startCellId || !_nodeParents.ContainsKey(_nodeParents[goal]))
         {
             //No solution was found.
+            //Debug.Log($"No pathfining found between: {currentPosition} and {goalPosition}");
             return null;
         }
 

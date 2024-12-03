@@ -117,7 +117,7 @@ public class GameGrid //GameGrid is in charge of drawing the grid and make opera
         return new Vector3(posX, location.y, posZ);
     }
 
-    public CellUnit FindClosestOtherFactionUnit(CellUnit unitSearching)
+    /*public CellUnit FindClosestOtherFactionUnit(CellUnit unitSearching)
     {
         Vector3 currentPosition = ClampToCellBounds(unitSearching.transform.position);
 
@@ -153,33 +153,56 @@ public class GameGrid //GameGrid is in charge of drawing the grid and make opera
 
         return closestEnemy;
         // we could also check the surrounding grid cells
+    }*/
+    public CellUnit FindClosestOtherFactionUnit(CellUnit unitSearching, int rangeToCheck)  //Checks a list of cells around its position depending on unit/building range.
+                                                                                               //If range is 0, only checks at same cell it is, 1 or bigger is the amount of cells around the origin 
+    {
+        Vector3 currentPosition = ClampToCellBounds(unitSearching.transform.position); //clamp unit current pos to cell bounds
+
+        int cellX = (int)(currentPosition.x / _cellSize);
+        int cellZ = (int)(currentPosition.z / _cellSize);
+
+        var cellId = new Vector2Int(cellX, cellZ); //convert vector3 unit pos to vector2 using only X and Z clamped coords
+
+        // validate this cell has even been registered
+        if (!_grid.ContainsKey(cellId))
+        {
+            _grid.Add(cellId, new GridCell(this)); //if this cell (vector2) is not already in the dictionary then add to it
+            return null;
+        }
+
+        var cellsInRange = GetCellsAroundPosition(unitSearching.transform.position, rangeToCheck); //Gets list<Vector2> of cells around unit based on unitRange
+
+        CellUnit closestEnemy = null;
+
+        float smallestDistance = Mathf.Infinity;
+
+        foreach (var cell in cellsInRange)
+        {
+            // Get other faction units in the current cell
+            var otherUnitsList = _grid[cell].GetOtherFactionUnits(unitSearching.Faction); //Tries to get any unit from different faction within list<Vector2> cells
+
+            foreach (var otherUnit in otherUnitsList)
+            {
+                float distSqr = (otherUnit.transform.position - unitSearching.transform.position).sqrMagnitude;
+
+                if (distSqr < smallestDistance) //checks if multiple units found, pick the one in less distance
+                {
+                    smallestDistance = distSqr;
+                    closestEnemy = otherUnit;
+                    //Debug.Log(closestEnemy);
+                }
+            }
+        }
+        return closestEnemy; //Returns the enemy unit that is closest. Null if there is no enemy unit
     }
 
     public Vector2 CellIdFromPosition(Vector3 position)
     {
-        Vector3 location = ClampToCellBounds(position);
+        Vector3 currentPosition = ClampToCellBounds(position);
 
-        int cellX;// = (int)(currentPosition.x / _cellSize);
-        int cellZ;// = (int)(currentPosition.z / _cellSize);
-
-        if (location.x < 0)
-        {
-            cellX = Mathf.CeilToInt((location.x / _cellSize));
-        }
-        else
-        {
-            cellX = Mathf.CeilToInt(location.x / _cellSize);
-
-        }
-
-        if (location.z < 0)
-        {
-            cellZ = Mathf.CeilToInt(location.z / _cellSize);
-        }
-        else
-        {
-            cellZ = Mathf.CeilToInt(location.z / _cellSize);
-        }
+        int cellX = (int)(currentPosition.x / _cellSize);
+        int cellZ = (int)(currentPosition.z / _cellSize);
 
         return new Vector2Int(cellX, cellZ);
     }
@@ -191,6 +214,17 @@ public class GameGrid //GameGrid is in charge of drawing the grid and make opera
 
         return new Vector3(cellX, 0, cellZ);
     }
+
+    public GridCell GetGridCell(Vector2 cellId)
+    {
+        if (!_grid.ContainsKey(cellId))
+        {
+            _grid.Add(cellId, new GridCell(this));
+        }
+
+        return _grid[cellId];
+    }
+
 
     public PlacedBuildingBase FindClosestEnemySpawnBuilding(CellUnit unitSearching)
     {
@@ -218,7 +252,7 @@ public class GameGrid //GameGrid is in charge of drawing the grid and make opera
         return closestEnemySpawnBuilding;
     }
 
-    public void OnUpdate()
+    /*public void OnUpdate()
     {
         _cellTickTimer += Time.deltaTime;
 
@@ -231,10 +265,10 @@ public class GameGrid //GameGrid is in charge of drawing the grid and make opera
 
     private void TickAllGrids()
     {
-        /*foreach (GridCell grid in _grid.Values)
+        foreach (GridCell grid in _grid.Values)
         {
             grid.OnTick();
-        }*/
+        }
     }
 
     private GridCell GetCellAtPosition(Vector3 position)
@@ -252,11 +286,11 @@ public class GameGrid //GameGrid is in charge of drawing the grid and make opera
             _grid.Add(cellId, new GridCell(this));
         }
         return _grid[cellId];
-    }
+    }*/
 
-    public List<GridCell> GetCellsAroundPosition(Vector3 position, int range)
+    public List<Vector2> GetCellsAroundPosition(Vector3 position, int range)
     {
-        List<GridCell> cells = new();
+        List<Vector2> cells = new();
 
         Vector3 centeredPosition = ClampToCellBounds(position);
 
@@ -268,7 +302,7 @@ public class GameGrid //GameGrid is in charge of drawing the grid and make opera
         int minZ = Mathf.Clamp(cellZ - range, -Height, Height);
         int maxZ = Mathf.Clamp(cellZ + range, minZ, Height);
 
-        Debug.Log($"Getting cells between: {minX} to {maxX} horizontal and {minZ} to {maxZ} vertical");
+        //Debug.Log($"Getting cells between: {minX} to {maxX} horizontal and {minZ} to {maxZ} vertical");
         for (int x = minX; x <= maxX; x++)
         {
             for (int z = minZ; z <= maxZ; z++)
@@ -280,9 +314,9 @@ public class GameGrid //GameGrid is in charge of drawing the grid and make opera
                     _grid.Add(cellId, new GridCell(this));
                 }
 
-                if (!cells.Contains(_grid[cellId]))
+                if (!cells.Contains(cellId))
                 {
-                    cells.Add(GetCellAtPosition(cellId));
+                    cells.Add(cellId);
                 }
             }
         }

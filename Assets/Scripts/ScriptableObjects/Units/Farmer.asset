@@ -13,12 +13,10 @@ MonoBehaviour:
   m_Name: Farmer
   m_EditorClassIdentifier: 
   _maxHp: 10
-  _armor: 0
   _attack: 5
-  _attackRange: 10000
+  _attackRange: 1
+  _visionRange: 0
   _movementSpeed: 2
-  _unitPrefab: {fileID: 542713314974633336, guid: 9650c348af697a345b97687c4ac8f362,
-    type: 3}
+  _unitPrefab: {fileID: 0}
   _unitSprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   _kindOfUnit: 1
-  _unitName: Bob

@@ -162,7 +162,8 @@ public class BuildingPlacementManager : MonoBehaviour
             var cellsCovered = _gameManager.GameGrid.GetCellsAroundPosition(loc, building._buildingData.BuildingSize);
             foreach (var cell in cellsCovered)
             {
-                cell.AddBuildingToCell(building);
+                var cellsInGrid = _gameManager.GameGrid.GetGridCell(cell);
+                cellsInGrid.AddBuildingToCell(building);
             }
 
             _placedParticles.transform.position = loc;

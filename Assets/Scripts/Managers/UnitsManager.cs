@@ -10,13 +10,14 @@ public class UnitsManager : MonoBehaviour //This manager gives orders to the uni
     [SerializeField] private int _unitsSpawned;
     [SerializeField] private CellUnit _unitToSpawnA;
     [SerializeField] private CellUnit _unitToSpawnB;
-    [SerializeField] private GameObject _spawner; //TODO replace spawner with Army camps position and update GenerateUnits method to use that position
-    [SerializeField] private List<CellUnit> _unitsListA = new();
-    [SerializeField] private List<CellUnit> _unitsListB = new();
+    [SerializeField] private GameObject _spawnerA; //TODO replace spawner with Army camps position and update GenerateUnits method to use that position
+    [SerializeField] private GameObject _spawnerB;
+    private List<CellUnit> _unitsListA = new();
+    private List<CellUnit> _unitsListB = new();
 
     [SerializeField] private GameObject practiceDummy;
 
-    private Vector3 _movementRequest = Vector3.zero;
+    //private Vector3 _movementRequest = Vector3.zero;
 
     private void Start()
     {
@@ -25,107 +26,54 @@ public class UnitsManager : MonoBehaviour //This manager gives orders to the uni
 
     private void Update()
     {
-        if (_unitsListB.Count > 0)
+        foreach (var unit in _unitsListA)
         {
-            foreach (CellUnit unit in _unitsListB)
+            if (_gameManager.GameGrid.CellIdFromPosition(unit.transform.position) != _gameManager.GameGrid.CellIdFromPosition(practiceDummy.transform.position))
             {
-                if (BuildingCheck(unit)) continue;
-                if (EnemyCheck(unit)) continue;
-                unit.RandomMove();
+                unit.MoveToTarget(practiceDummy.transform.position);
             }
         }
 
-        if (_unitsListA.Count > 0)
+        foreach (var unit in _unitsListB)
         {
-            foreach (CellUnit unit in _unitsListA)
+            /*CellUnit closestEnemy = _gameManager.GameGrid.FindClosestOtherFactionUnit(unit, 10);
+            if (closestEnemy != null)
             {
-                //if (BuildingCheck(unit)) continue;
-                //if (EnemyCheck(unit)) continue;
-                // if none, patrol randomly
-                MoveTo(unit);
-            }
-        }
-    }
-
-    public bool CheckSurrounding(CellUnit unit)
-    {
-        
-        if (BuildingCheck(unit) == true)
-        {
-            return BuildingCheck(unit);
-        }
-
-        else
-        {
-            return EnemyCheck(unit);
+                if (_gameManager.GameGrid.CellIdFromPosition(unit.transform.position) != _gameManager.GameGrid.CellIdFromPosition(closestEnemy.transform.position))
+                {
+                    unit.MoveToTarget(closestEnemy.gameObject.transform.position);
+                }
+                else
+                {
+                    Debug.Log("No enemy in range");
+                }
+            }*/
         }
     }
 
     internal void SetGameManager(GameManager gameManager)
     {
         _gameManager = gameManager;
-        GenerateUnits(1, _unitToSpawnA, _spawner, ref _unitsListA);
-        GenerateUnits(2, _unitToSpawnB, _spawner, ref _unitsListB);
+        GenerateUnits(1, _unitToSpawnA, _spawnerA.transform, ref _unitsListA);
+        GenerateUnits(2, _unitToSpawnB, _spawnerB.transform, ref _unitsListB);
     }
 
-    private void GenerateUnits(int faction, CellUnit data, GameObject spawner, ref List<CellUnit> list)
+    private void GenerateUnits(int faction, CellUnit data, Transform spawner, ref List<CellUnit> list)
     {
-        if(faction != 1)
+        int mapWidth = _gameManager.GameGrid.Width * _gameManager.GameGrid.CellSize;
+        int mapHeight = _gameManager.GameGrid.Height * _gameManager.GameGrid.CellSize;
+
+        for (int i = 0; i < _unitsSpawned; i++)
         {
-            int mapWidth = _gameManager.GameGrid.Width * _gameManager.GameGrid.CellSize;
-            int mapHeight = _gameManager.GameGrid.Height * _gameManager.GameGrid.CellSize;
+            CellUnit cellUnit = Instantiate(data, spawner.transform.position, Quaternion.identity, spawner);
 
-            for (int i = 0; i < _unitsSpawned; i++)
-            {
-                Vector3 randomPos = new Vector3(Random.Range(-mapWidth, mapWidth), 0f, Random.Range(-mapHeight, mapHeight));
+            cellUnit.Setup(faction, i, _gameManager.GameGrid);
 
-                CellUnit unitInstance = Instantiate<CellUnit>(data, randomPos, Quaternion.identity, spawner.transform);
-
-                unitInstance.Setup(faction, i, _gameManager.GameGrid);
-
-                list.Add(unitInstance);
-            }
-        }
-        else
-        {
-            var pos = _gameManager.GameGrid.GetCellWorldCenter(spawner.transform.position);
-
-            for (int i = 0; i < _unitsSpawned; i++)
-            {
-                CellUnit unitInstance = Instantiate<CellUnit>(data, pos, Quaternion.identity, spawner.transform);
-
-                unitInstance.Setup(faction, i, _gameManager.GameGrid);
-
-                list.Add(unitInstance);
-            }
+            list.Add(cellUnit);
         }
     }
 
-    private bool EnemyCheck(CellUnit unit)
-    {
-        // Find enemy within vision range (currently, same cell only)
-        CellUnit closestEnemy = _gameManager.GameGrid.FindClosestOtherFactionUnit(unit);
-
-        if (closestEnemy != null)
-        {
-            unit.MoveToEnemy(closestEnemy);
-            return true;
-        }
-        return false;
-    }
-    private bool BuildingCheck(CellUnit unit)
-    {
-        // Find closest enemy spawn building
-        PlacedBuildingBase closestSpawnBuilding = _gameManager.GameGrid.FindClosestEnemySpawnBuilding(unit);
-
-        if (closestSpawnBuilding != null)
-        {
-            unit.MoveToEnemy(closestSpawnBuilding);
-            return true;
-        }
-        return false;
-    }
-    public void LocTarget(CellUnit unitToMove, Vector3 target)
+    /*public void LocTarget(CellUnit unitToMove, Vector3 target)
     {
         if (unitToMove != null && target != null)
         {
@@ -139,5 +87,45 @@ public class UnitsManager : MonoBehaviour //This manager gives orders to the uni
     {
         Vector3 cellInGrid = _gameManager.GameGrid.GetCellWorldCenter(practiceDummy.transform.position);
         unitToMove.MoveToTarget(cellInGrid);
-    }
+    }*/
+
+    /*private void OnDrawGizmos()
+    {
+        if (_gameManager == null || _gameManager.GameGrid == null)
+        {
+            return;
+        }
+        Gizmos.color = Color.cyan;
+        int w = _gameManager.GameGrid.Width;
+        int h = _gameManager.GameGrid.Height;
+        int size = _gameManager.GameGrid.CellSize;
+        float halfSize = size / 2f;
+
+        float posX = 0 - ((w * size) + halfSize);
+        for (int i = -w; i <= w + 1; i++)
+        {
+            float posZ = 0 - ((h * size) + halfSize);
+            for (int j = -h; j <= h + 1; j++)
+            {
+                posZ += size;
+
+                Gizmos.DrawWireCube((new Vector3(posX, 0, posZ)), Vector3.one * size);
+
+                //Debug.Log($"{posX},{posZ}");
+            }
+            posX += size;
+        }
+
+        Gizmos.color = Color.gray;
+
+        RaycastHit hitInfo;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out hitInfo, 20000, GroundMask))
+        {
+            var pos = _gameManager.GameGrid.GetCellWorldCenter(hitInfo.point);
+
+            Gizmos.DrawWireCube(pos, Vector3.one * _gameManager.GameGrid.CellSize);
+        }
+    }*/
 }

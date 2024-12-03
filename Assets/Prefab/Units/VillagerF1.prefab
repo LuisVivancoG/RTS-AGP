@@ -2082,6 +2082,7 @@ GameObject:
   - component: {fileID: 265601785722646551}
   - component: {fileID: 1146613454240110852}
   - component: {fileID: 1812937785954227363}
+  - component: {fileID: 5174624497938987012}
   m_Layer: 8
   m_Name: VillagerF1
   m_TagString: Untagged
@@ -2142,10 +2143,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04148ff5151dcb349b8e3746e850446e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _moveSpeed: 50
-  _animController: {fileID: 265601785722646551}
-  _scriptedObjectData: {fileID: 11400000, guid: 7f3373fcdb762fe47bf42d2f301a1c0f,
-    type: 2}
+  _moveSpeed: 100
+  _canMove: 1
 --- !u!65 &1812937785954227363
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2167,6 +2166,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.814709, y: 1.860394, z: 0.5279258}
   m_Center: {x: 0.0038070679, y: 0.9251144, z: 0.030456632}
+--- !u!114 &5174624497938987012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7793339446223966979}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4adaba3d2f4b3a64eacf2ffa8dc2168d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MoveSpeed: 10
+  _canMove: 0
 --- !u!1 &8312692015075681478
 GameObject:
   m_ObjectHideFlags: 0

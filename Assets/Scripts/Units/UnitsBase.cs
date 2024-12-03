@@ -20,7 +20,7 @@ public class UnitsBase : MonoBehaviour //Base class for units. It tracks current
     {
         _currentHP = UnitData.MaxHp;
     }
-    internal void SetManager(UnitsManager manager, GameGrid grid, int faction) //pass player class instead of int
+    /*/*internal void SetManager(UnitsManager manager, GameGrid grid, int faction) //pass player class instead of int
     {
         Manager = manager;
         Faction = faction;
@@ -48,6 +48,6 @@ public class UnitsBase : MonoBehaviour //Base class for units. It tracks current
 
     }
     public virtual void OnPlaced() { }
-    public virtual void OnRemoved() { }
+    public virtual void OnRemoved() { }*/
 }
 
