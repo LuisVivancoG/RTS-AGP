@@ -52,9 +52,11 @@ public class GameGrid //GameGrid is in charge of drawing the grid and make opera
                 var cellId = new Vector2Int(i, j);
 
                 _grid.Add(cellId, new GridCell(this));
+                //Debug.Log(cellId);
             }
             posX += size;
         }
+        //Debug.Log(_grid.Count);
     }
 
     public Vector3 ClampToCellBounds(Vector3 posToClamp)
@@ -68,28 +70,22 @@ public class GameGrid //GameGrid is in charge of drawing the grid and make opera
     public void UpdateUnitCell(CellUnit unit, Vector3 previousPosition)
     {
         previousPosition = ClampToCellBounds(previousPosition);
-
-        int oldCellX = (int)(previousPosition.x / _cellSize);
-        int oldCellZ = (int)(previousPosition.z / _cellSize);
-
         Vector3 currentPosition = ClampToCellBounds(unit.transform.position);
 
         int cellX = (int)(currentPosition.x / _cellSize);
         int cellZ = (int)(currentPosition.z / _cellSize);
 
-        //If it didn't change cell, we are done
-        if (oldCellX == cellX && oldCellZ == cellZ)
-        {
-            return;
-        }
         var cellId = new Vector2Int(cellX, cellZ);
 
         if (!_grid.ContainsKey(cellId))
         {
+            //Debug.LogWarning($"Cell {cellId} not found. Adding new cell.");
             _grid.Add(cellId, new GridCell(this));
         }
 
+        //Debug.Log($"Unit {unit.name} moving to cell {cellId} at position {currentPosition}");
         _grid[cellId].AddUnitToCell(unit);
+        unit.UpdatePreviousPosition();
     }
 
     public Vector3 GetCellWorldCenter(Vector3 location)
@@ -154,46 +150,53 @@ public class GameGrid //GameGrid is in charge of drawing the grid and make opera
         return closestEnemy;
         // we could also check the surrounding grid cells
     }*/
+    
     public CellUnit FindClosestOtherFactionUnit(CellUnit unitSearching, int rangeToCheck)  //Checks a list of cells around its position depending on unit/building range.
-                                                                                               //If range is 0, only checks at same cell it is, 1 or bigger is the amount of cells around the origin 
+                                                                                           //If range is 0, only checks at same cell it is, 1 or bigger is the amount of cells around the origin 
     {
         Vector3 currentPosition = ClampToCellBounds(unitSearching.transform.position); //clamp unit current pos to cell bounds
+        var cellsInRange = GetCellsAroundPosition(currentPosition, rangeToCheck); //Gets list<Vector2> of cells around unit based on unitRange
 
-        int cellX = (int)(currentPosition.x / _cellSize);
-        int cellZ = (int)(currentPosition.z / _cellSize);
-
-        var cellId = new Vector2Int(cellX, cellZ); //convert vector3 unit pos to vector2 using only X and Z clamped coords
-
-        // validate this cell has even been registered
-        if (!_grid.ContainsKey(cellId))
+        if (cellsInRange == null || cellsInRange.Count == 0)
         {
-            _grid.Add(cellId, new GridCell(this)); //if this cell (vector2) is not already in the dictionary then add to it
+            //Debug.LogWarning($"No cells found in range {rangeToCheck} for unit {unitSearching.name}");
             return null;
         }
 
-        var cellsInRange = GetCellsAroundPosition(unitSearching.transform.position, rangeToCheck); //Gets list<Vector2> of cells around unit based on unitRange
-
         CellUnit closestEnemy = null;
-
         float smallestDistance = Mathf.Infinity;
 
         foreach (var cell in cellsInRange)
         {
-            // Get other faction units in the current cell
-            var otherUnitsList = _grid[cell].GetOtherFactionUnits(unitSearching.Faction); //Tries to get any unit from different faction within list<Vector2> cells
+            var otherUnitsList = cell.GetOtherFactionUnits(unitSearching.Faction); //Tries to get any unit from different faction within list<Vector2> cells
 
             foreach (var otherUnit in otherUnitsList)
             {
                 float distSqr = (otherUnit.transform.position - unitSearching.transform.position).sqrMagnitude;
 
+                Vector3 directionEnemy = (otherUnit.transform.position - unitSearching.transform.position).normalized;
+                float angle = Vector3.Angle(unitSearching.transform.forward, directionEnemy);
+
+                //Debug.Log($"Checking unit {otherUnit.name}, distance: {Mathf.Sqrt(distSqr)}, angle: {angle}");
+
+
                 if (distSqr < smallestDistance) //checks if multiple units found, pick the one in less distance
                 {
                     smallestDistance = distSqr;
                     closestEnemy = otherUnit;
-                    //Debug.Log(closestEnemy);
                 }
             }
         }
+
+        if (closestEnemy != null)
+        {
+            //Debug.Log($"Closest enemy to {unitSearching.name} is {closestEnemy.name} at distance {Mathf.Sqrt(smallestDistance)}");
+        }
+        else
+        {
+            //Debug.Log($"No enemies found in range {rangeToCheck} for unit {unitSearching.name}");
+        }
+
         return closestEnemy; //Returns the enemy unit that is closest. Null if there is no enemy unit
     }
 
@@ -214,17 +217,6 @@ public class GameGrid //GameGrid is in charge of drawing the grid and make opera
 
         return new Vector3(cellX, 0, cellZ);
     }
-
-    public GridCell GetGridCell(Vector2 cellId)
-    {
-        if (!_grid.ContainsKey(cellId))
-        {
-            _grid.Add(cellId, new GridCell(this));
-        }
-
-        return _grid[cellId];
-    }
-
 
     public PlacedBuildingBase FindClosestEnemySpawnBuilding(CellUnit unitSearching)
     {
@@ -269,7 +261,8 @@ public class GameGrid //GameGrid is in charge of drawing the grid and make opera
         {
             grid.OnTick();
         }
-    }
+    }*/
+
 
     private GridCell GetCellAtPosition(Vector3 position)
     {
@@ -286,11 +279,11 @@ public class GameGrid //GameGrid is in charge of drawing the grid and make opera
             _grid.Add(cellId, new GridCell(this));
         }
         return _grid[cellId];
-    }*/
+    }
 
-    public List<Vector2> GetCellsAroundPosition(Vector3 position, int range)
+    public List<GridCell> GetCellsAroundPosition(Vector3 position, int range)
     {
-        List<Vector2> cells = new();
+        List<GridCell> cells = new();
 
         Vector3 centeredPosition = ClampToCellBounds(position);
 
@@ -314,9 +307,9 @@ public class GameGrid //GameGrid is in charge of drawing the grid and make opera
                     _grid.Add(cellId, new GridCell(this));
                 }
 
-                if (!cells.Contains(cellId))
+                if (!cells.Contains(_grid[cellId]))
                 {
-                    cells.Add(cellId);
+                    cells.Add(GetCellAtPosition(cellId));
                 }
             }
         }

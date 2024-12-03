@@ -408,7 +408,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 1100
   field of view: 42
   orthographic: 0
   orthographic size: 5
@@ -493,7 +493,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 82611fea8c5781742b3c2cea2407335e, type: 3}
   m_Name: 
@@ -529,7 +529,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &400100233
 RectTransform:
   m_ObjectHideFlags: 0
@@ -750,7 +750,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1171969214001868, guid: b8e88b0dea5ac274687b7726b8d0acce, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4650532351473966, guid: b8e88b0dea5ac274687b7726b8d0acce, type: 3}
       propertyPath: m_LocalScale.x
@@ -6206,7 +6206,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 884576918}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4590f9961e7ec6444964ec0e4eb4a7f6, type: 3}
   m_Name: 
@@ -6235,7 +6235,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1371054176035966, guid: 4feb53352c551784b9219c4551564108, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4270120935635300, guid: 4feb53352c551784b9219c4551564108, type: 3}
       propertyPath: m_LocalScale.x
@@ -6323,7 +6323,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1134170741}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b3b22d2353314624a9db579c9e18d5c8, type: 3}
   m_Name: 
@@ -6366,13 +6366,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1134170741}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9c8ed1d67731beb45b735faf85e64eeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GridWidth: 9
-  GridHeight: 9
+  GridWidth: 16
+  GridHeight: 16
   GridCellSize: 20
   CellTickRate: 1
   _playersGrp: {fileID: 884576918}
@@ -6386,19 +6386,18 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1134170741}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4c9f78cdba9026541a0ced22290d5566, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _unitsSpawned: 10
+  _unitsSpawned: 1
   _unitToSpawnA: {fileID: 1146613454240110852, guid: 9650c348af697a345b97687c4ac8f362,
     type: 3}
   _unitToSpawnB: {fileID: -5532628068393017219, guid: 08b9105d7f886604e8286e0e789d2fdd,
     type: 3}
-  _spawner: {fileID: 2002427005}
-  _unitsListA: []
-  _unitsListB: []
+  _spawnerA: {fileID: 2002427005}
+  _spawnerB: {fileID: 1637765030}
   practiceDummy: {fileID: 1362769744}
 --- !u!114 &1134170747
 MonoBehaviour:
@@ -6434,7 +6433,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1134170741}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ca34e2dd10022554c8acf03f42e5bf05, type: 3}
   m_Name: 
@@ -6456,16 +6455,16 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1134170741}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6ded9d18aa973bc44ae6eee33125ad4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   GameManager: {fileID: 1134170748}
-  FactionUnitA: {fileID: 6466063351180791205, guid: 9650c348af697a345b97687c4ac8f362,
+  FactionUnitA: {fileID: 5174624497938987012, guid: 9650c348af697a345b97687c4ac8f362,
     type: 3}
   UnitParentA: {fileID: 1662218463}
-  FactionUnitB: {fileID: 3169325651520196876, guid: 08b9105d7f886604e8286e0e789d2fdd,
+  FactionUnitB: {fileID: 1911510171152974280, guid: 08b9105d7f886604e8286e0e789d2fdd,
     type: 3}
   UnitParentB: {fileID: 1286999712}
   UnitsToTestWith: 1
@@ -6473,7 +6472,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   _dummy: {fileID: 1362769744}
-  _enemyTrans: {fileID: 0}
+  _factionASpawner: {fileID: 2002427005}
+  _factionBSpawner: {fileID: 1637765030}
 --- !u!1 &1218503892
 GameObject:
   m_ObjectHideFlags: 0
@@ -7127,10 +7127,11 @@ Transform:
   m_GameObject: {fileID: 1286999710}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 25, y: 0, z: 17}
+  m_LocalPosition: {x: 90, y: 0, z: 50}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1637765031}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1329206018
@@ -7427,7 +7428,7 @@ Transform:
   m_GameObject: {fileID: 1362769744}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -130, y: 0, z: 25}
+  m_LocalPosition: {x: 60, y: 0, z: -86}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7523,7 +7524,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1653399378536734, guid: d0063548e49510f488493b14242c4948, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4484725512817084, guid: d0063548e49510f488493b14242c4948, type: 3}
       propertyPath: m_LocalScale.x
@@ -7634,6 +7635,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DistantTerrain
       objectReference: {fileID: 0}
+    - target: {fileID: 1077931925729256, guid: 9141f281a0b7a8344962a0e677d847a3, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4756930872692726, guid: 9141f281a0b7a8344962a0e677d847a3, type: 3}
       propertyPath: m_LocalScale.x
       value: 100
@@ -7695,6 +7700,37 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9141f281a0b7a8344962a0e677d847a3, type: 3}
+--- !u!1 &1637765030
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1637765031}
+  m_Layer: 0
+  m_Name: SpawnerB
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1637765031
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1637765030}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1286999712}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1662218461
 GameObject:
   m_ObjectHideFlags: 0
@@ -7720,7 +7756,7 @@ Transform:
   m_GameObject: {fileID: 1662218461}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -30, y: 0, z: -10}
+  m_LocalPosition: {x: -159, y: 0, z: 115}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -7909,7 +7945,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2002427006}
   m_Layer: 0
-  m_Name: Spawner
+  m_Name: SpawnerA
   m_TagString: Untagged
   m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -7924,7 +7960,7 @@ Transform:
   m_GameObject: {fileID: 2002427005}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 20.9, y: 0, z: 17.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -17,13 +17,6 @@ public class UnitsManager : MonoBehaviour //This manager gives orders to the uni
 
     [SerializeField] private GameObject practiceDummy;
 
-    //private Vector3 _movementRequest = Vector3.zero;
-
-    private void Start()
-    {
-        
-    }
-
     private void Update()
     {
         foreach (var unit in _unitsListA)
@@ -36,18 +29,18 @@ public class UnitsManager : MonoBehaviour //This manager gives orders to the uni
 
         foreach (var unit in _unitsListB)
         {
-            /*CellUnit closestEnemy = _gameManager.GameGrid.FindClosestOtherFactionUnit(unit, 10);
+            CellUnit closestEnemy = _gameManager.GameGrid.FindClosestOtherFactionUnit(unit, 10);
             if (closestEnemy != null)
             {
                 if (_gameManager.GameGrid.CellIdFromPosition(unit.transform.position) != _gameManager.GameGrid.CellIdFromPosition(closestEnemy.transform.position))
                 {
-                    unit.MoveToTarget(closestEnemy.gameObject.transform.position);
+                    unit.MoveToTarget(closestEnemy.transform.position);
                 }
                 else
                 {
                     Debug.Log("No enemy in range");
                 }
-            }*/
+            }
         }
     }
 

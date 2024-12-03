@@ -45,16 +45,16 @@ public class BuildingOptions : DialogBase
     public void ButtonDismantle()
     {
         //_manager.PlayAudio(AudioIds.DismantleButton);
-        _onDismantle?.Invoke(_buildingSelected);
+        //_onDismantle?.Invoke(_buildingSelected);
         _manager.HideDialog(MenuType());
-        /*var dialog = _manager.ShowDialog(RTSMenus.ConfirmationDialog);
+        var dialog = _manager.ShowDialog(RTSMenus.ConfirmationDialog);
         if (dialog is ConfirmationDialog confirmation)
         {
-            confirmation.Show("Are you sure you want to dismantle " + _buildingSelected._buildingData.name + "?",
+            confirmation.Show("Are you sure you want to dismantle\n" + _buildingSelected._buildingData.name + "?",
                 "You cannot undo this action.",
                 $"Dismantle " + _buildingSelected._buildingData.name,
-                "Cancel");
-        }*/
+                "Cancel", _onDismantle, _buildingSelected);
+        }
     }
 
     public void ButtonUpgrade()

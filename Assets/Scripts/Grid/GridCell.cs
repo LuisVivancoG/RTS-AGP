@@ -34,7 +34,6 @@ public class GridCell //Helps to track information per cell on the grid. The one
 
         if (_unitsInCellByFaction[unit.Faction].ContainsKey(unit.name))
         {
-            Debug.LogError("Trying to add unit to a grid cell they already belong to!");
             return;
         }
 
@@ -57,8 +56,10 @@ public class GridCell //Helps to track information per cell on the grid. The one
     {
         // filter by faction
         var otherFactions = _unitsInCellByFaction.Where(x => x.Key != factionToIgnore);
+
         // get dictionary of units in each faction
         var factionLists = otherFactions.Select(x => x.Value);
+
         // get all units in the dictionary
         return factionLists.SelectMany(x => x.Values).ToList();
     }
@@ -85,6 +86,6 @@ public class GridCell //Helps to track information per cell on the grid. The one
         _isWalkable = false;
         _obstacleLevel = buildingInCell._buildingData.ObstacleLevel;
         var cellPos = _parentGrid.CellIdFromPosition(buildingInCell.transform.position);
-        _parentGrid.Pathfinder.UpdateCellAfterbuildingPlaced(cellPos, _isWalkable);
+        _parentGrid.Pathfinder.UpdateCellAfterbuildingPlaced(cellPos, _isWalkable, _obstacleLevel);
     }
 }

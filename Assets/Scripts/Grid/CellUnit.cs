@@ -48,10 +48,10 @@ public class CellUnit : MonoBehaviour //this is where units states are defined a
         _faction = faction;
         name = $"P{faction}_{name}_{unitCounter}";
         _grid = gameGrid;
-        UpdatePreviousPosition();
+        //UpdatePreviousPosition();
     }
 
-    void UpdatePreviousPosition()
+    public void UpdatePreviousPosition()
     {
         _previousPosition = transform.position;
     }
@@ -65,7 +65,6 @@ public class CellUnit : MonoBehaviour //this is where units states are defined a
     {
         if (_path == null || _i < 0 || _i >= _path.Count)
         {
-            //Debug.LogWarning($"Faction {_faction}: Invalid path or index. Stopping movement.");
             //_canMove = false;
             return;
         }
@@ -82,8 +81,6 @@ public class CellUnit : MonoBehaviour //this is where units states are defined a
 
         transform.position = Vector3.MoveTowards(transform.position, centerNode, speed);
 
-        UpdatePreviousPosition();
-
         if (Vector3.Distance(transform.position, nextNode) < 0.1f)
         {
             _i--;
@@ -93,31 +90,32 @@ public class CellUnit : MonoBehaviour //this is where units states are defined a
 
         if (_i < 0)
         {
-            Debug.Log($"Faction {_faction}: Reached destination.");
             _canMove = false;
         }
     }
 
     public void MoveToTarget(Vector3 target)
     {
-        Debug.Log($"Faction {_faction} says hi");
         _path = new List<Vector2>();
 
         target = _grid.ClampToCellBounds(target);
 
         if (_grid.CellIdFromPosition(transform.position) == _grid.CellIdFromPosition(target))
         {
-            return;
+            //Debug.Log($"Faction {_faction}: Already at target."); //delete this
+            _canMove = false;
+            return; 
         }
         _path = _grid.Pathfinder.FindShortestPath(Pathfinder.PathfindingType.AStarManhattan, transform.position, target);
-        Debug.Log($"Path contains: {_path}");
 
         if (_path == null || _path.Count == 0)
         {
+            //Debug.LogWarning($"Faction {_faction}: No valid path to {target}");
             _canMove = false;
             return;
         }
+        //Debug.Log($"Faction {_faction}: Moving along path with {_path.Count} nodes");
         _i = _path.Count - 1;
-        //_canMove = true;
+        _canMove = true;
     }
 }

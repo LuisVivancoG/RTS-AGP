@@ -45,10 +45,10 @@ public class GameManager : MonoBehaviour
         _unitsManager.SetGameManager(this);
     }
 
-    /*private void OnDrawGizmos()
+    private void OnDrawGizmos()
     {
-        //if (_gameGrid != null)
-        //{
+        if (_gameGrid != null)
+        {
             Gizmos.color = Color.gray;
             float halfSize = GridCellSize / 2f;
 
@@ -62,7 +62,7 @@ public class GameManager : MonoBehaviour
                     Gizmos.DrawWireCube((new Vector3(posX, halfSize, posZ)), Vector3.one * GridCellSize);
                 }
                 posX += GridCellSize;
-           // }
+            }
         }
-    }*/
+    }
 }

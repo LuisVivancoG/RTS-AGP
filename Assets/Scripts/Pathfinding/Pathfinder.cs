@@ -38,10 +38,11 @@ public class Pathfinder //Algorithm that returns a list of nodes/vectors to make
             Obstacles[cell.Key] = cell.Value.ObstacleLevel;
         }
     }
-    public void UpdateCellAfterbuildingPlaced(Vector2 pos, bool bWalkable) //this function gets an element in the dictionary walkablePositions using the vector2 aka key, and updates the value (its walkable or not).
-                                                                           //Consider adding another line where updates the obstacles dictionary with the desire level of obstacle
+    public void UpdateCellAfterbuildingPlaced(Vector2 pos, bool bWalkable, int obstacleLevel) //this function gets an element in the dictionary walkablePositions using the vector2 aka key, and updates the value (its walkable or not).
+                                                                                              //Consider adding another line where updates the obstacles dictionary with the desire level of obstacle
     {
         WalkablePositions[pos] = bWalkable;
+        Obstacles[pos] = obstacleLevel;
     }
 
     bool CanMove(Vector2 nextPosition) //checks if the next position is within walkablePosition dictionary, if it is retures can move else returns cannot move
