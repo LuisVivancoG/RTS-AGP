@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,55 +6,62 @@ public class CellUnit : MonoBehaviour //this is where units states are defined a
                                       //Between the list of states available are FindCloseEnemyBuilding, FindCloseEnemyUnit and MoveToTarget.
                                       //TODO consider adding selfdestruction state
 {
-    [SerializeField] private float _moveSpeed = 5f;
-    //[SerializeField] private Animator _animController;
-
-    //[SerializeField] private UnitsData _scriptedObjectData;
-    //public UnitsData _unitData => _scriptedObjectData;
-
-
+    private GameGrid _grid;
+    private float _moveSpeed;
+    private bool _canMove = false;
     private int _faction;
     public int Faction => _faction;
+
+    private IList<Vector2> _path;
+    private int _index;
+
+    public Vector3 _currentDestination {  get; private set; }
 
     private GridCell _currentCell = null;
     public GridCell CurrentCell => _currentCell;
 
-    private Vector3 _moveTarget;
-    private Vector3 _previousPosition;
-    private GameGrid _grid;
+    private Transform _enemyUnit = null;
+    public Transform EnemyUnit => _enemyUnit;
 
-    private int _i;
-    private IList<Vector2> _path;
-
-    public bool _canMove;
-
-    private int _health = 20;
+    private Action _onMovement;
+    private Action _onIdle;
 
     private void Update()
     {
         if (_canMove)
         {
             OnMovement();
+            _onMovement?.Invoke();
+        }
+        else
+        {
+            _onIdle?.Invoke();
+        }    
+
+        if(Input.GetKeyDown(KeyCode.W))
+        {
+            Debug.Log($"Unit faction {Faction} currently at {_grid.CellIdFromPosition(this.transform.position)}");
         }
     }
 
-    public void ChangeHealth(int change)
+    public void SetData(UnitsBase unitPrefab, Action movement, Action idle)
     {
-        _health += change;
-        // todo death check
+        _moveSpeed = unitPrefab.UnitData.MovementSpeed;
+        _onMovement = movement;
+        _onIdle = idle;
     }
 
-    public void Setup(int faction, int unitCounter, GameGrid gameGrid)
+    public void Setup(int faction/*, int unitCounter*/, GameGrid gameGrid)
     {
         _faction = faction;
-        name = $"P{faction}_{name}_{unitCounter}";
+        //name = $"P{faction}_{name}";
         _grid = gameGrid;
-        //UpdatePreviousPosition();
+        _currentDestination = transform.position;
     }
 
-    public void UpdatePreviousPosition()
+    public void SetEnemyTarget(CellUnit enemyFound)
     {
-        _previousPosition = transform.position;
+        _enemyUnit = enemyFound.transform;
     }
 
     public void SetCell(GridCell gridCell)
@@ -63,59 +71,77 @@ public class CellUnit : MonoBehaviour //this is where units states are defined a
 
     void OnMovement()
     {
-        if (_path == null || _i < 0 || _i >= _path.Count)
+        /*if (_path == null || _index < 0 || _index >= _path.Count)
         {
-            //_canMove = false;
+            _canMove = false;
+            _onIdle?.Invoke();
+            _currentCommand = Vector3.zero;
             return;
-        }
+        }*/
 
         float speed = Time.deltaTime * _moveSpeed;
-        var nextNode = _grid.GetCellPositionFromId(_path[_i]);
+        var nextNode = _grid.GetCellPositionFromId(_path[_index]);
         var centerNode = _grid.GetCellWorldCenter(nextNode);
 
-        Vector3 directionToTarget = nextNode - transform.position;
-        if (Vector3.Distance(transform.position, nextNode) > 0.1f)
+        Vector3 directionToTarget = centerNode - transform.position;
+        if (Vector3.Distance(transform.position, centerNode) > _grid.CellSize)
         {
             transform.rotation = Quaternion.LookRotation(directionToTarget, transform.up);
         }
 
         transform.position = Vector3.MoveTowards(transform.position, centerNode, speed);
 
-        if (Vector3.Distance(transform.position, nextNode) < 0.1f)
+        _grid.UpdateUnitCell(this);
+
+        if (Vector3.Distance(transform.position, centerNode) < 0.1f)
         {
-            _i--;
+            _index--;
         }
 
-        _grid.UpdateUnitCell(this, _previousPosition);
-
-        if (_i < 0)
+        if (_index < 0)
         {
             _canMove = false;
+            //_onIdle?.Invoke();
+            //_currentCommand = Vector3.zero;
         }
+
+        
     }
 
-    public void MoveToTarget(Vector3 target)
+    public void SetNewTarget(Vector3 target)
     {
+        _currentDestination = target;
         _path = new List<Vector2>();
+        ValidatePathFinder();
+    }
 
-        target = _grid.ClampToCellBounds(target);
+    void ValidatePathFinder()
+    {
+        var targetCenteredCell = _grid.GetCellWorldCenter(_currentDestination);
 
-        if (_grid.CellIdFromPosition(transform.position) == _grid.CellIdFromPosition(target))
+        if (_grid.CellIdFromPosition(transform.position) == _grid.CellIdFromPosition(targetCenteredCell))
         {
-            //Debug.Log($"Faction {_faction}: Already at target."); //delete this
+            Debug.Log($"Unit faction {_faction} reached the target.");
             _canMove = false;
-            return; 
-        }
-        _path = _grid.Pathfinder.FindShortestPath(Pathfinder.PathfindingType.AStarManhattan, transform.position, target);
-
-        if (_path == null || _path.Count == 0)
-        {
-            //Debug.LogWarning($"Faction {_faction}: No valid path to {target}");
-            _canMove = false;
+            _path.Clear();
             return;
         }
-        //Debug.Log($"Faction {_faction}: Moving along path with {_path.Count} nodes");
-        _i = _path.Count - 1;
-        _canMove = true;
+
+        if (_grid.CellIdFromPosition(transform.position) != _grid.CellIdFromPosition(targetCenteredCell))
+        {
+            var newPath = _grid.Pathfinder.FindShortestPath(Pathfinder.PathfindingType.AStarManhattan, transform.position, targetCenteredCell);
+            if (newPath == null || newPath.Count == 0)
+            {
+                Debug.LogWarning($"Faction {_faction}: No valid path to {targetCenteredCell}");
+                _canMove = false;
+                return;
+            }
+            else
+            {
+                _path = newPath;
+                _index = newPath.Count - 1;
+                _canMove = true;
+            }
+        }
     }
 }

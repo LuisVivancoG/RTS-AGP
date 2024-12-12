@@ -12,14 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ef791774c67c5f4aa68aee28ca483c9, type: 3}
   m_Name: ArmyCamp
   m_EditorClassIdentifier: 
-  _maxHp: 3c0000005000000096000000
+  _maxHp:
+  - 60
+  - 90
+  - 120
   _armor: 30
-  _buildingGhostPrefab: {fileID: 1669699389552599265, guid: 984e98ef6c76f7d42af959b1c07759fb,
+  _buildingGhostPrefab: {fileID: 3003831983553741362, guid: 5b64df27ced3584498f9552eeeaf1f93,
     type: 3}
-  _buildingPlacedPrefab: {fileID: 2189904782867823076, guid: 444f93cf0ea1d4b45b6801e5e023b853,
+  _buildingPlacedPrefab: {fileID: 888130419771042371, guid: a33602a6a9594ea45bf4d97d05c6654d,
     type: 3}
-  _buildingSprite: {fileID: 21300000, guid: b5092d92bde62cb4681edb4bf04ffa1e, type: 3}
+  _buildingSprite: {fileID: 21300000, guid: b72cad45ecb4c3c498c24337061aca5f, type: 3}
   _kindOfStructure: 3
-  _buildingName: Camp
-  _buildingSize: 0
+  _buildingName: ArmyCamp
+  _buildingSize: 14
   _obstacleLevel: 3

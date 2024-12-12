@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using UnityEngine;
 
 public class GridCell //Helps to track information per cell on the grid. The one in charge of applying damage done by static assets, returns list of rival units,  
@@ -17,12 +16,20 @@ public class GridCell //Helps to track information per cell on the grid. The one
     public int ObstacleLevel => _obstacleLevel;
 
     private GameGrid _parentGrid;
-    private int _netHpChangePerTick;
 
+    private Vector2 _position;
+
+    private int _netHpChangePerTick;
 
     public GridCell(GameGrid grid)
     {
         _parentGrid = grid;
+    }
+
+    public void CellInGridPos(Vector2 pos)
+    {
+        _position = pos;
+        //Debug.Log(_position);
     }
 
     public void AddUnitToCell(CellUnit unit)
@@ -85,7 +92,13 @@ public class GridCell //Helps to track information per cell on the grid. The one
         _buildingInCell = buildingInCell;
         _isWalkable = false;
         _obstacleLevel = buildingInCell._buildingData.ObstacleLevel;
-        var cellPos = _parentGrid.CellIdFromPosition(buildingInCell.transform.position);
-        _parentGrid.Pathfinder.UpdateCellAfterbuildingPlaced(cellPos, _isWalkable, _obstacleLevel);
+        
+        _parentGrid.Pathfinder.UpdateCellAfterbuildingPlaced(_position, _isWalkable, _obstacleLevel);
+    }
+
+    public PlacedBuildingBase GetCurrentBuilding()
+    {
+        //Debug.Log(BuildingInCell);
+        return _buildingInCell;
     }
 }

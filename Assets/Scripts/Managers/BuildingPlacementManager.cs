@@ -10,6 +10,8 @@ using System.Linq;
 /// </summary>
 public class BuildingPlacementManager : MonoBehaviour
 {
+    public static BuildingPlacementManager Instance;
+
     [Header("ObjectPooling")]
     [SerializeField] private AllBuildingsData _allBuildingData;
     internal AllBuildingsData _runTimeBuildingsData => _allBuildingData;
@@ -24,11 +26,9 @@ public class BuildingPlacementManager : MonoBehaviour
     private bool _allowPlacement = true;
 
     [SerializeField] private ParticleSystem _placedParticles;
+    [SerializeField] private ParticleSystem _explosionParticles;
     [SerializeField] private GameObject _buildingsGrp;
     [SerializeField] private GameObject _ghostsGrp;
-
-    [SerializeField] private Material _canPlaceMaterial;
-    [SerializeField] private Material _cannotPlaceMaterial;
 
     [Header("Player settings")]
     [SerializeField] private GameManager _gameManager;
@@ -36,6 +36,17 @@ public class BuildingPlacementManager : MonoBehaviour
 
     [SerializeField] private UIManager _uiManager;
 
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
 
     private void Start()
     {
@@ -57,7 +68,8 @@ public class BuildingPlacementManager : MonoBehaviour
                 if (Physics.Raycast(ray, out hitInfo, 10000, _buildingsMask)) //if the position was on a building placed then retrieve info
                 {
                     var buildingClicked = hitInfo.transform.GetComponentInParent<PlacedBuildingBase>();
-                    Debug.Log(buildingClicked);
+                    //Debug.Log(buildingClicked);
+                    buildingClicked.ToggleCanvas();
                     BuildingOptions(buildingClicked);
                 }
             }
@@ -91,6 +103,7 @@ public class BuildingPlacementManager : MonoBehaviour
             if (Input.GetMouseButtonDown(0))
             {
                 PlaceBuilding(pos);
+                AudioManager.Instance.BuildingSound(AudioManager.BuildingAction.Placing);
                 //var cellIdBlocked = _gameManager.GameGrid.CellIdFromPosition(pos);
 
                 _buildingToPlace = null;
@@ -156,41 +169,65 @@ public class BuildingPlacementManager : MonoBehaviour
         if (_buildingToPlace != null)
         {
             var building = _buildingsPools[_buildingToPlace.KindOfStructure].Get();
-            
-            building.transform.position = loc;
+
+            var buildingCenterCell = _gameManager.GameGrid.GetCellWorldCenter(loc);
+
+            building.transform.position = buildingCenterCell;
             _localPlayerBuildingManager.AddBuilding(building);
-            var cellsCovered = _gameManager.GameGrid.GetCellsAroundPosition(loc, building._buildingData.BuildingSize);
+            var cellsCovered = _gameManager.GameGrid.GetCellsAroundPosition(buildingCenterCell, building._buildingData.BuildingSize);
             foreach (var cell in cellsCovered)
             {
                 Debug.Log($"GridCell: {cell} covered by {building._buildingData.name}");
-                //var cellsInGrid = _gameManager.GameGrid.GetGridCell(cell);
-                //cellsInGrid.AddBuildingToCell(building);
                 cell.AddBuildingToCell(building);
             }
 
-            _placedParticles.transform.position = loc;
+            _placedParticles.transform.position = buildingCenterCell;
             _placedParticles.Play();
         }
     }
 
     public void BuildingOptions(PlacedBuildingBase buildingPlaced)
     {
-        var dialog = _uiManager.ShowDialog(RTSMenus.BuildingOptions);
-        if(dialog is BuildingOptions options)
+        BuildingPlacementUI.Instance.gameObject.SetActive(false );
+
+        if (buildingPlaced._buildingData.KindOfStructure != BuildingType.ArmyCamp)
         {
-            options.Show(buildingPlaced._buildingData.name + " Options",
-                "What do you want to do?",
-                "Upgrade",
-                "Dismantle",
-                "Cancel",
-                RemoveBuilding, buildingPlaced);
+            var dialog = _uiManager.ShowDialog(RTSMenus.BuildingOptions);
+            if (dialog is BuildingOptions options)
+            {
+                options.Show(buildingPlaced._buildingData.name + " Options",
+                    "What do you want to do?",
+                    "Upgrade",
+                    "Dismantle",
+                    "Cancel",
+                    RemoveBuilding, buildingPlaced);
+            }
         }
+        else
+        {
+            var dialog = _uiManager.ShowDialog(RTSMenus.ArmyCampOptions);
+            if (dialog is ArmyCampOptions ArmyOptions)
+            {
+                ArmyOptions.Show(buildingPlaced._buildingData.name + " Options",
+                    "What do you want to do?",
+                    "",
+                    "Upgrade",
+                    "Dismantle",
+                    "Cancel",
+                    RemoveBuilding, buildingPlaced);
+            }
+        }
+        AudioManager.Instance.UISound(AudioManager.UIType.PopUp);
     }
 
     public void RemoveBuilding(PlacedBuildingBase buildingToRemove)
     {
-        buildingToRemove.gameObject.SetActive(false);
+        //buildingToRemove.gameObject.SetActive(false);
+        StartCoroutine(buildingToRemove.Destruction());
         _buildingsPools[buildingToRemove._buildingData.KindOfStructure].Release(buildingToRemove);
+        _localPlayerBuildingManager.RemoveBuilding(buildingToRemove);
+        _explosionParticles.transform.position = buildingToRemove.transform.position;
+        _explosionParticles.Play();
     }
 
     internal void SetLocalBuildingManager(PlayerBuildingsManager playerBuildingsManager)

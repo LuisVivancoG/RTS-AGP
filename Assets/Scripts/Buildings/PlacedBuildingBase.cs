@@ -1,25 +1,31 @@
 using System;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlacedBuildingBase : MonoBehaviour
 {
     [SerializeField] private BuildingData _scriptedObjectData;
+    [SerializeField] private Canvas _buildingCanvas;
+    [SerializeField] private Slider _buildingSliderHp;
     public BuildingData _buildingData => _scriptedObjectData;
 
-    private int _currentHP;
-
+    internal float _currentHP;
+    internal bool _isDestroyed;
     private int _buildingLvl;
 
-    protected PlayerBuildingsManager Manager;
+    internal PlayerBuildingsManager Manager;
     protected Player Owner;
+
+    public int Faction; //delete later
 
     private bool _isWalkable;
 
-    private void Start()
+    private void OnEnable()
     {
-        _currentHP = _scriptedObjectData.MaxHp[0];
-        _buildingLvl = 1;
+        Initialize();
     }
+
     public void SetManager(PlayerBuildingsManager manager, ref Action onTick, Player owner)
     {
         Manager = manager;
@@ -30,14 +36,52 @@ public class PlacedBuildingBase : MonoBehaviour
     {
         return Owner.PlayerFaction;
     }
-    public void CalculateDamage(int damageReceived)
+
+    public void ToggleCanvas()
     {
-        damageReceived -= _scriptedObjectData.Armor;
+        if(_buildingCanvas.enabled)
+        {
+            _buildingCanvas.enabled = false;
+        }
+        else _buildingCanvas.enabled = true;
+    }
+
+    public virtual void CalculateDamage(float damageReceived)
+    {
+        //damageReceived -= _scriptedObjectData.Armor;
         TakeDamage(damageReceived);
     }
-    private void TakeDamage(int damageTaken)
+
+    public virtual void Initialize()
+    {
+        _isDestroyed = false;
+        _buildingSliderHp.value = 1;
+        _currentHP = _scriptedObjectData.MaxHp[0];
+        _buildingLvl = 1;
+    }
+
+    private void TakeDamage(float damageTaken)
     {
         _currentHP -= damageTaken;
+        _buildingSliderHp.value = ConvertAndClampHP();
+        Debug.Log(ConvertAndClampHP());
+    }
+
+    private float ConvertAndClampHP()
+    {
+        float maxHP = _scriptedObjectData.MaxHp[0];
+        return Mathf.Clamp(_currentHP/maxHP, 0f, 1f);
+    }
+
+    public virtual IEnumerator Destruction()
+    {
+        //AnimDeath();
+        AudioManager.Instance.BuildingSound(AudioManager.BuildingAction.Dismantle);
+        //explosionParticles and sound
+        yield return new WaitForSeconds(2);
+        //this.gameObject.SetActive(false);
+        //_uManager.UnitDeath(this);
+        _isDestroyed = false;
     }
 
     public void CanLvlUp()

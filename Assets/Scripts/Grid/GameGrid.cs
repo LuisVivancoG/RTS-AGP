@@ -32,6 +32,8 @@ public class GameGrid //GameGrid is in charge of drawing the grid and make opera
         _gameManager = gameManager;
         GenerateGrid();
         _pathfinder = new Pathfinder(this, _grid);
+
+        Debug.Log("Grid initialized");
     }
 
     private void GenerateGrid()
@@ -52,6 +54,7 @@ public class GameGrid //GameGrid is in charge of drawing the grid and make opera
                 var cellId = new Vector2Int(i, j);
 
                 _grid.Add(cellId, new GridCell(this));
+                _grid[cellId].CellInGridPos(cellId);
                 //Debug.Log(cellId);
             }
             posX += size;
@@ -67,9 +70,8 @@ public class GameGrid //GameGrid is in charge of drawing the grid and make opera
             Mathf.Clamp(posToClamp.z, _height * -_cellSize, _height * _cellSize));
     }
 
-    public void UpdateUnitCell(CellUnit unit, Vector3 previousPosition)
+    public void UpdateUnitCell(CellUnit unit)
     {
-        previousPosition = ClampToCellBounds(previousPosition);
         Vector3 currentPosition = ClampToCellBounds(unit.transform.position);
 
         int cellX = (int)(currentPosition.x / _cellSize);
@@ -82,10 +84,8 @@ public class GameGrid //GameGrid is in charge of drawing the grid and make opera
             //Debug.LogWarning($"Cell {cellId} not found. Adding new cell.");
             _grid.Add(cellId, new GridCell(this));
         }
-
-        //Debug.Log($"Unit {unit.name} moving to cell {cellId} at position {currentPosition}");
         _grid[cellId].AddUnitToCell(unit);
-        unit.UpdatePreviousPosition();
+        Debug.Log($"Cell {cellId} in grid. Adding {unit.name} to the cell");
     }
 
     public Vector3 GetCellWorldCenter(Vector3 location)
@@ -157,12 +157,6 @@ public class GameGrid //GameGrid is in charge of drawing the grid and make opera
         Vector3 currentPosition = ClampToCellBounds(unitSearching.transform.position); //clamp unit current pos to cell bounds
         var cellsInRange = GetCellsAroundPosition(currentPosition, rangeToCheck); //Gets list<Vector2> of cells around unit based on unitRange
 
-        if (cellsInRange == null || cellsInRange.Count == 0)
-        {
-            //Debug.LogWarning($"No cells found in range {rangeToCheck} for unit {unitSearching.name}");
-            return null;
-        }
-
         CellUnit closestEnemy = null;
         float smallestDistance = Mathf.Infinity;
 
@@ -174,27 +168,12 @@ public class GameGrid //GameGrid is in charge of drawing the grid and make opera
             {
                 float distSqr = (otherUnit.transform.position - unitSearching.transform.position).sqrMagnitude;
 
-                Vector3 directionEnemy = (otherUnit.transform.position - unitSearching.transform.position).normalized;
-                float angle = Vector3.Angle(unitSearching.transform.forward, directionEnemy);
-
-                //Debug.Log($"Checking unit {otherUnit.name}, distance: {Mathf.Sqrt(distSqr)}, angle: {angle}");
-
-
                 if (distSqr < smallestDistance) //checks if multiple units found, pick the one in less distance
                 {
                     smallestDistance = distSqr;
                     closestEnemy = otherUnit;
                 }
             }
-        }
-
-        if (closestEnemy != null)
-        {
-            //Debug.Log($"Closest enemy to {unitSearching.name} is {closestEnemy.name} at distance {Mathf.Sqrt(smallestDistance)}");
-        }
-        else
-        {
-            //Debug.Log($"No enemies found in range {rangeToCheck} for unit {unitSearching.name}");
         }
 
         return closestEnemy; //Returns the enemy unit that is closest. Null if there is no enemy unit
@@ -218,30 +197,30 @@ public class GameGrid //GameGrid is in charge of drawing the grid and make opera
         return new Vector3(cellX, 0, cellZ);
     }
 
-    public PlacedBuildingBase FindClosestEnemySpawnBuilding(CellUnit unitSearching)
+    public PlacedBuildingBase FindClosestEnemyBuilding(CellUnit unitSearching, int rangeToCheck)
     {
-        PlacedBuildingBase closestEnemySpawnBuilding = null;
+        Vector3 currentPosition = ClampToCellBounds(unitSearching.transform.position); //clamp unit current pos to cell bounds
+        var cellsInRange = GetCellsAroundPosition(currentPosition, rangeToCheck); //Gets list<Vector2> of cells around unit based on unitRange
 
+        PlacedBuildingBase closestEnemyBuilding = null;
         float smallestDistance = Mathf.Infinity;
 
-        // todo, optimize to check a list of buildings instead of the entire grid
-        foreach (var cell in _grid)
+        foreach (var cell in cellsInRange)
         {
-            var building = cell.Value.BuildingInCell;
-            if (building != null &&
-                building is TownHall &&
-                building.GetFaction() != unitSearching.Faction)
+            closestEnemyBuilding = cell.GetCurrentBuilding();
+
+            if (closestEnemyBuilding != null && closestEnemyBuilding.Faction != unitSearching.Faction)
             {
-                float distSqr = (building.transform.position - unitSearching.transform.position).sqrMagnitude;
+                float distSqr = (closestEnemyBuilding.transform.position - unitSearching.transform.position).sqrMagnitude;
 
                 if (distSqr < smallestDistance)
                 {
                     smallestDistance = distSqr;
-                    closestEnemySpawnBuilding = building;
                 }
-            }
+            }            
         }
-        return closestEnemySpawnBuilding;
+        //Debug.Log(closestEnemyBuilding);
+        return closestEnemyBuilding;
     }
 
     /*public void OnUpdate()
@@ -263,7 +242,6 @@ public class GameGrid //GameGrid is in charge of drawing the grid and make opera
         }
     }*/
 
-
     private GridCell GetCellAtPosition(Vector3 position)
     {
         Vector3 currentPosition = ClampToCellBounds(position);
@@ -276,6 +254,7 @@ public class GameGrid //GameGrid is in charge of drawing the grid and make opera
         // validate this cell has even been registered
         if (!_grid.ContainsKey(cellId))
         {
+            //Debug.Log($"CellID {cellId} not in the grid, adding it now");
             _grid.Add(cellId, new GridCell(this));
         }
         return _grid[cellId];
@@ -305,19 +284,24 @@ public class GameGrid //GameGrid is in charge of drawing the grid and make opera
                 if (!_grid.ContainsKey(cellId))
                 {
                     _grid.Add(cellId, new GridCell(this));
+                    //Debug.Log($"{cellId}, not contained in GameGrid. Adding it now");
                 }
 
-                if (!cells.Contains(_grid[cellId]))
+                else
                 {
-                    cells.Add(GetCellAtPosition(cellId));
+                    //Debug.Log($"GameGrid does contains {cellId}, retrieving it from cells around");
+                    if (!cells.Contains(_grid[cellId]))
+                    {
+                        cells.Add(GetCellAtPosition(cellId));
+                    }
                 }
             }
         }
-
+        //Debug.Log($"{cells.Count} cells checked around {position} position");
         return cells;
     }
 
-    public Vector3 FindClosestEnemySpawnBuilding()
+    /*public Vector3 FindClosestEnemySpawnBuilding()
     {
         // todo get the list of all enemy spawn building from each factions BuildingManager 
 
@@ -333,5 +317,5 @@ public class GameGrid //GameGrid is in charge of drawing the grid and make opera
 
         // todo not here - When we are moving along the path, if we encounter enemy units, fight them first!
         return new LinkedList<PathNode>();
-    }
+    }*/
 }

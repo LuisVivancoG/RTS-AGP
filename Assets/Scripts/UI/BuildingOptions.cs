@@ -10,18 +10,18 @@ public class BuildingOptions : DialogBase
     [SerializeField] private TMP_Text _upgradeButtonText;
     [SerializeField] private TMP_Text _dismantleButtonText;
     [SerializeField] private TMP_Text _cancelButtonText;
-    [SerializeField] private Button _upgradeButton;
-    [SerializeField] private Button _dismantleButton;
-    [SerializeField] private Button _cancelButton;
+    //[SerializeField] private Button _upgradeButton;
+    //[SerializeField] private Button _dismantleButton;
+    //[SerializeField] private Button _cancelButton;
 
     public override RTSMenus MenuType()
     {
         return RTSMenus.BuildingOptions;
     }
 
-    private Action _onUpgrade;
+    //private Action _onUpgrade;
     private Action<PlacedBuildingBase> _onDismantle;
-    private Action _onCancel;
+    //private Action _onCancel;
     private PlacedBuildingBase _buildingSelected;
 
     public void Show(string title,
@@ -54,6 +54,7 @@ public class BuildingOptions : DialogBase
                 "You cannot undo this action.",
                 $"Dismantle " + _buildingSelected._buildingData.name,
                 "Cancel", _onDismantle, _buildingSelected);
+            AudioManager.Instance.UISound(AudioManager.UIType.Confirmation);
         }
     }
 
@@ -66,6 +67,8 @@ public class BuildingOptions : DialogBase
     public void ButtonCancel()
     {
         //_onCancel?.Invoke();
+        BuildingPlacementUI.Instance.gameObject.SetActive(true);
+        _buildingSelected.ToggleCanvas();
         _manager.HideDialog(MenuType());
     }
 }

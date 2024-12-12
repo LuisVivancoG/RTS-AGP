@@ -12,14 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ef791774c67c5f4aa68aee28ca483c9, type: 3}
   m_Name: Laboratory
   m_EditorClassIdentifier: 
-  _maxHp: 5000000078000000b4000000
+  _maxHp:
+  - 80
+  - 120
+  - 150
   _armor: 50
   _buildingGhostPrefab: {fileID: 7072890070839740613, guid: 7898aea6cd242ff41b09a588321548f8,
     type: 3}
   _buildingPlacedPrefab: {fileID: 6564861581791199225, guid: 9f7c036ac5bd4f244a47b6c80942290e,
     type: 3}
-  _buildingSprite: {fileID: 21300000, guid: c482482621a99c64aa46d6404a561359, type: 3}
+  _buildingSprite: {fileID: 21300000, guid: c8046b3cfc7df54428d9fad7c7d57707, type: 3}
   _kindOfStructure: 5
   _buildingName: Lab
-  _buildingSize: 0
+  _buildingSize: 26
   _obstacleLevel: 3

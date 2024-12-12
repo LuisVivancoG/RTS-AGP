@@ -1,53 +1,106 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UnitsBase : MonoBehaviour //Base class for units. It tracks current stats of the unit on the game
                                        //Stats are overwritten by scripted data of the unit depending on their type
 {
     [SerializeField] private UnitsData _scriptedObjectData;
+    [SerializeField] private Animator _anim;
+    [SerializeField] private CellUnit _cellUnit;
+    [SerializeField] private Canvas _unitCanvas;
+    [SerializeField] private Slider _hpSlider;
+    [SerializeField] private GameObject _targetedImg;
+    public CellUnit CellUnit => _cellUnit;
     public UnitsData UnitData => _scriptedObjectData;
 
-    private float _currentHP;
+    internal float _currentHP;
 
-    protected UnitsManager Manager;
-    protected int Faction = 1; //change this to Player class
-    protected GameGrid GameGrid;
+    internal UnitsManager _uManager;
 
-    private CellUnit _cellUnit;
-    public CellUnit CellUnit => _cellUnit;
+    internal bool _isDeath;
 
     private void Start()
     {
+        _cellUnit.SetData(this, AnimMovement, AnimIdle);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            CalculateDamage(4);
+        }
+    }
+
+    internal void SetUnitManager(UnitsManager uManager)
+    {
+        _uManager = uManager;
+    }
+
+    private void OnEnable()
+    {
         _currentHP = UnitData.MaxHp;
+        _hpSlider.value = 1;
     }
-    /*/*internal void SetManager(UnitsManager manager, GameGrid grid, int faction) //pass player class instead of int
+
+    public void OnSelected()
     {
-        Manager = manager;
-        Faction = faction;
-        GameGrid = grid;
+        _anim.SetTrigger("Selected");
+        _unitCanvas.enabled = true;
+        _targetedImg.SetActive(true);
     }
-    public int GetFaction()
+
+    public void OnDeselect()
     {
-        return Faction; //.PlayerFaction;
+        _unitCanvas.enabled = false;
+        _targetedImg.SetActive(false);
     }
-    public void CalculateDamage(int damageReceived)
+
+    void AnimMovement()
     {
-        damageReceived -= UnitData.Armor;
+        _anim.SetBool("IsMoving", true);
+    }
+
+    void AnimIdle()
+    {
+        _anim.SetBool("IsMoving", false);
+    }
+
+    public virtual void AnimAttack()
+    {
+        _anim.SetTrigger("Attacking");
+    }
+
+    internal void AnimDeath()
+    {
+        _anim.SetTrigger("Death");
+    }
+
+    
+    internal virtual void CalculateDamage(int damageReceived)
+    {
+        //damageReceived -= UnitData.Armor;
         TakeDamage(damageReceived);
+        //Debug.Log(_currentHP + "hp left");
     }
     private void TakeDamage(int damageTaken)
     {
         _currentHP -= damageTaken;
+        _hpSlider.value = ConvertAndClampHP();
     }
 
-    public void CanLvlUp()
+    private float ConvertAndClampHP()
     {
+        return Mathf.Clamp(_currentHP / UnitData.MaxHp, 0, 1);
     }
-    protected virtual void Tick()
+
+    /*public void CanLvlUp()
+    {
+    }*/
+    /*protected virtual void Tick()
     {
 
-    }
-    public virtual void OnPlaced() { }
-    public virtual void OnRemoved() { }*/
+    }*/
 }
 

@@ -20,4 +20,8 @@ public class PlayerBuildingsManager
     {
         _ownedBuildings.Add(placedBuilding);
     }
+    public void RemoveBuilding(PlacedBuildingBase placedBuilding)
+    {
+        _ownedBuildings.Remove(placedBuilding);
+    }
 }

@@ -5,7 +5,9 @@ public class UIManager : MonoBehaviour
 {
     [SerializeField] private GameObject _safeZone;
     [SerializeField] private ConfirmationDialog _confirmationDialogPrefab;
-    [SerializeField] private BuildingOptions _buildingOptionsPrefan;
+    [SerializeField] private BuildingOptions _buildingOptionsPrefab;
+    [SerializeField] private ArmyCampOptions _armyCampOptionsPrefab;
+    [SerializeField] private PauseMenu _pauseOptionsPrefab;
 
     Dictionary<RTSMenus, DialogBase> _dialogInstances = new();
 
@@ -31,7 +33,13 @@ public class UIManager : MonoBehaviour
                     created = CreateDialogFromPrefab(_confirmationDialogPrefab);
                     break;
                 case RTSMenus.BuildingOptions:
-                    created = CreateDialogFromPrefab(_buildingOptionsPrefan);
+                    created = CreateDialogFromPrefab(_buildingOptionsPrefab);
+                    break;
+                case RTSMenus.ArmyCampOptions:
+                    created = CreateDialogFromPrefab(_armyCampOptionsPrefab);
+                    break;
+                case RTSMenus.PauseMenu:
+                    created = CreateDialogFromPrefab(_pauseOptionsPrefab);
                     break;
             }
             if (created == null)

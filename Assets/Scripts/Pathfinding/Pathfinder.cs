@@ -43,6 +43,7 @@ public class Pathfinder //Algorithm that returns a list of nodes/vectors to make
     {
         WalkablePositions[pos] = bWalkable;
         Obstacles[pos] = obstacleLevel;
+        Debug.Log($"Updating cell {pos}, new walkable value is {bWalkable} and obstacle level is {obstacleLevel}");
     }
 
     bool CanMove(Vector2 nextPosition) //checks if the next position is within walkablePosition dictionary, if it is retures can move else returns cannot move

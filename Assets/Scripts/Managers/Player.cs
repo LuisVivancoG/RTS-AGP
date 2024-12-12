@@ -20,7 +20,7 @@ public class Player
     {
         _playerIndex = playerIndex;
         _playerFaction = playerFaction;
-        _storedFood = 0;
+        _storedFood = 500;
 
         _buildingManager = new PlayerBuildingsManager(this, gameManager);
     }

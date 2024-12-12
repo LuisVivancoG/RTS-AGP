@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 269afa3d762104f4eabdd50c0a9b9f17, type: 3}
+  m_Name: TankMinion
+  m_EditorClassIdentifier: 
+  _maxHp: 20
+  _damage: 8
+  _maxAttackRange: 3
+  _maxDetectionRange: 1
+  _movementSpeed: 30
+  _unitPrefab: {fileID: 5821316056926729377, guid: 17d40eb835703dc4f8548c2af148b7e5,
+    type: 3}
+  _unitSprite: {fileID: 21300000, guid: 8c071e84f5014fc45aa5edba530f9814, type: 3}
+  _kindOfUnit: 5

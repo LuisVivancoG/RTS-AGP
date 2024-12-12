@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class BuildingData : ScriptableObject
 {
-    [SerializeField] private int[] _maxHp;
-    [SerializeField] private int _armor;
+    [SerializeField] private float[] _maxHp;
+    [SerializeField] private float _armor;
     [SerializeField] private GameObject _buildingGhostPrefab;
     [SerializeField] private PlacedBuildingBase _buildingPlacedPrefab;
     [SerializeField] private Sprite _buildingSprite;
@@ -15,8 +15,8 @@ public class BuildingData : ScriptableObject
     [SerializeField] private int _obstacleLevel;
 
 
-    public int[] MaxHp => _maxHp;
-    public int Armor => _armor;
+    public float[] MaxHp => _maxHp;
+    public float Armor => _armor;
     public int BuildingSize => _buildingSize;
     public int ObstacleLevel => _obstacleLevel;
     public GameObject BuildingGhostPrefab => _buildingGhostPrefab;
@@ -40,6 +40,7 @@ public enum BuildingType
     TownHall = 1,
     PassiveResource = 2,
     ArmyCamp = 3,
-    Navigation = 4,
+    Gate = 4,
     ResearchLab = 5,
+    Wall= 6,
 }
