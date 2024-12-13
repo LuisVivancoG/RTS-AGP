@@ -28,6 +28,8 @@ public class UnitsManager : MonoBehaviour //This manager gives orders to the uni
     private void Start()
     {
         InitializePool();
+
+        GenerateUnits(2, _unitToSpawnB, _spawnerB.transform, ref _unitsListB);
     }
 
     private void Update()
@@ -44,15 +46,15 @@ public class UnitsManager : MonoBehaviour //This manager gives orders to the uni
                 return;
             }*/
             if (MovementOrder(unit, unit.CellUnit._currentDestination)) continue;
-            //if (EnemyCheck(unit)) continue;
-            //if (BuildingCheck(unit)) continue;
+            if (EnemyCheck(unit)) continue;
+            if (BuildingCheck(unit)) continue;
         }
 
         foreach (var unit in _unitsListB)
         {
             //if (MovementOrder(unit, unit.CellUnit._currentDestination)) continue;
             if (EnemyCheck(unit)) continue;
-            //if (BuildingCheck(unit)) continue;
+            if (BuildingCheck(unit)) continue;
         }
     }
 
@@ -103,8 +105,11 @@ public class UnitsManager : MonoBehaviour //This manager gives orders to the uni
 
         if (closestEnemy != null)
         {
-            unit.CellUnit.SetNewTarget(closestEnemy.transform.position);
-            unit.CellUnit.SetEnemyTarget(closestEnemy);
+            var minDistance = unit.transform.forward + (new Vector3(0, 0, (_gameManager.GameGrid.CellSize * unit.UnitData.MaxAttackRange)));
+            //Debug.Log(minDistance);
+
+            unit.CellUnit.SetNewTarget(closestEnemy.transform.position - minDistance);
+            //unit.CellUnit.SetEnemyTarget(closestEnemy);
             //Debug.LogWarning($"Unit: {unit} encounterd enemy: {closestEnemy} at {_gameManager.GameGrid.CellIdFromPosition(closestEnemy.transform.position)}");
             return true;
         }
@@ -116,8 +121,11 @@ public class UnitsManager : MonoBehaviour //This manager gives orders to the uni
 
         if (closestFoeBuilding != null)
         {
-            unit.CellUnit.SetNewTarget(closestFoeBuilding.transform.position);
-            Debug.Log($"Unit: {unit} found building: {closestFoeBuilding} moving towards it");
+            var minDistance = unit.transform.forward + (new Vector3 (0,0, (_gameManager.GameGrid.CellSize * unit.UnitData.MaxAttackRange)));
+            //Debug.Log(minDistance);
+
+            unit.CellUnit.SetNewTarget(closestFoeBuilding.transform.position - minDistance);
+            //Debug.Log($"Unit: {unit} found building: {closestFoeBuilding} moving towards it");
             return true;
         }
         return false;

@@ -18,7 +18,7 @@ public class DamageSystem : MonoBehaviour
     {
 
         // update the units health
-        //target.ChangeHealth(hpChange);
+        target.ChangeHealth(hpChange);
         // todo update the hp bar
         // todo update the unit animation state to "flinch" if not already flinched
 

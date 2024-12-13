@@ -19,9 +19,27 @@ public class PlayerBuildingsManager
     public void AddBuilding(PlacedBuildingBase placedBuilding)
     {
         _ownedBuildings.Add(placedBuilding);
+        placedBuilding.SetManager(this, ref _tick, _owner);
+        var cellsBuildingIsOn = _gameManager.GameGrid.GetCellsAroundPosition(placedBuilding.transform.position, placedBuilding._buildingData.BuildingSize);
+        foreach (var cell in cellsBuildingIsOn)
+        {
+            cell.AddBuildingToCell(placedBuilding);
+        }
+        placedBuilding.OnPlaced();
     }
     public void RemoveBuilding(PlacedBuildingBase placedBuilding)
     {
         _ownedBuildings.Remove(placedBuilding);
+        var cellsBuildingIsOn = _gameManager.GameGrid.GetCellsAroundPosition(placedBuilding.transform.position, placedBuilding._buildingData.BuildingSize);
+        foreach (var cell in cellsBuildingIsOn)
+        {
+            cell.RemoveBuildingFromCell(placedBuilding);
+        }
+        placedBuilding.OnRemoved();
     }
+    public void OnUpdate()
+    {
+        _tick?.Invoke();
+    }
+
 }

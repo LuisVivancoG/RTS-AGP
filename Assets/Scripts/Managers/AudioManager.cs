@@ -38,6 +38,9 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip _rejectBtn;
     [SerializeField] private AudioClip _popUp;
 
+    [Header("Gameloop")]
+    [SerializeField] private AudioClip _defeatSound;
+
     public enum UIType
     {
         None = 0,
@@ -245,6 +248,11 @@ public class AudioManager : MonoBehaviour
         {
             PlayClip(clip);
         }
+    }
+
+    public void EndingSound()
+    {
+        PlayClip(_defeatSound);
     }
     void PlayClip(AudioClip source)
     {

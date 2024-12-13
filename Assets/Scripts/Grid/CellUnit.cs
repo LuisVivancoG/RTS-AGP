@@ -26,6 +26,8 @@ public class CellUnit : MonoBehaviour //this is where units states are defined a
     private Action _onMovement;
     private Action _onIdle;
 
+    private Action<int> _hpChange;
+
     private void Update()
     {
         if (_canMove)
@@ -38,17 +40,18 @@ public class CellUnit : MonoBehaviour //this is where units states are defined a
             _onIdle?.Invoke();
         }    
 
-        if(Input.GetKeyDown(KeyCode.W))
+        /*if(Input.GetKeyDown(KeyCode.W))
         {
             Debug.Log($"Unit faction {Faction} currently at {_grid.CellIdFromPosition(this.transform.position)}");
-        }
+        }*/
     }
 
-    public void SetData(UnitsBase unitPrefab, Action movement, Action idle)
+    public void SetData(UnitsBase unitPrefab, Action movement, Action idle, Action<int> changeHp)
     {
         _moveSpeed = unitPrefab.UnitData.MovementSpeed;
         _onMovement = movement;
         _onIdle = idle;
+        _hpChange = changeHp;
     }
 
     public void Setup(int faction/*, int unitCounter*/, GameGrid gameGrid)
@@ -121,7 +124,7 @@ public class CellUnit : MonoBehaviour //this is where units states are defined a
 
         if (_grid.CellIdFromPosition(transform.position) == _grid.CellIdFromPosition(targetCenteredCell))
         {
-            Debug.Log($"Unit faction {_faction} reached the target.");
+            //Debug.Log($"Unit faction {_faction} reached the target.");
             _canMove = false;
             _path.Clear();
             return;
@@ -129,6 +132,9 @@ public class CellUnit : MonoBehaviour //this is where units states are defined a
 
         if (_grid.CellIdFromPosition(transform.position) != _grid.CellIdFromPosition(targetCenteredCell))
         {
+            //var minimumDistanceToTarget = 
+            //_grid.GetCellsAroundPosition()
+
             var newPath = _grid.Pathfinder.FindShortestPath(Pathfinder.PathfindingType.AStarManhattan, transform.position, targetCenteredCell);
             if (newPath == null || newPath.Count == 0)
             {
@@ -143,5 +149,11 @@ public class CellUnit : MonoBehaviour //this is where units states are defined a
                 _canMove = true;
             }
         }
+    }
+    public void ChangeHealth(int change)
+    {
+        //_health += change;
+        _hpChange?.Invoke(change);
+        // todo death check
     }
 }

@@ -5,4 +5,5 @@ public enum RTSMenus
     BuildingOptions = 2,
     ArmyCampOptions = 3,
     PauseMenu = 4,
+    DefeatScree = 5,
 }

@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int _playerCount = 1;
     [SerializeField] private BuildingPlacementManager _placementManager;
     [SerializeField] private UnitsManager _unitsManager;
+    [SerializeField] private UIManager _uiManager;
     private SortedList<int, Player> _playerController = new();
 
     [Header ("Tutorial")]
@@ -35,10 +36,8 @@ public class GameManager : MonoBehaviour
         pc = 1,
     }
 
-    /*private DamageSystem _damageSystem;
-    public DamageSystem DamageSystem => _damageSystem;*/
-
-    //[SerializeField] private N_UnitsManager _NUnitsManager;
+    private DamageSystem _damageSystem;
+    public DamageSystem DamageSystem => _damageSystem;
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -74,6 +73,15 @@ public class GameManager : MonoBehaviour
         StartCoroutine(GameLoop());
     }
 
+    private void Update()
+    {
+        foreach(var p in _playerController.Values)
+        {
+            p.BuildingManager.OnUpdate();
+        }
+        _gameGrid.OnUpdate();
+    }
+
     public void BaseDestroyed(Contestants champ)
     {
         switch (champ)
@@ -90,8 +98,8 @@ public class GameManager : MonoBehaviour
 
     IEnumerator GameLoop()
     {
-        yield return StartCoroutine(TutorialGameplay());
-        Debug.LogWarning("Starting the gameplay");
+        /*yield return StartCoroutine(TutorialGameplay());
+        Debug.LogWarning("Starting the gameplay");*/
         yield return StartCoroutine(GameStarted());
         Debug.LogWarning("Showing results");
         yield return StartCoroutine(ShowResults());
@@ -119,6 +127,8 @@ public class GameManager : MonoBehaviour
 
     IEnumerator ShowResults()
     {
+        AudioManager.Instance.EndingSound();
+        var dialog = _uiManager.ShowDialog(RTSMenus.DefeatScree);
         yield return _waitBeforeTransition;
     }
     private void OnDrawGizmos()

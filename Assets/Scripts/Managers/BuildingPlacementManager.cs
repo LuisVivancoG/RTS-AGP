@@ -174,16 +174,25 @@ public class BuildingPlacementManager : MonoBehaviour
 
             building.transform.position = buildingCenterCell;
             _localPlayerBuildingManager.AddBuilding(building);
-            var cellsCovered = _gameManager.GameGrid.GetCellsAroundPosition(buildingCenterCell, building._buildingData.BuildingSize);
+            /*/*var cellsCovered = _gameManager.GameGrid.GetCellsAroundPosition(buildingCenterCell, building._buildingData.BuildingSize);
             foreach (var cell in cellsCovered)
             {
                 Debug.Log($"GridCell: {cell} covered by {building._buildingData.name}");
                 cell.AddBuildingToCell(building);
-            }
+            }*/
 
             _placedParticles.transform.position = buildingCenterCell;
             _placedParticles.Play();
         }
+    }
+    public void RemoveBuilding(PlacedBuildingBase buildingToRemove)
+    {
+        //buildingToRemove.gameObject.SetActive(false);
+        StartCoroutine(buildingToRemove.Destruction());
+        _buildingsPools[buildingToRemove._buildingData.KindOfStructure].Release(buildingToRemove);
+        _localPlayerBuildingManager.RemoveBuilding(buildingToRemove);
+        _explosionParticles.transform.position = buildingToRemove.transform.position;
+        _explosionParticles.Play();
     }
 
     public void BuildingOptions(PlacedBuildingBase buildingPlaced)
@@ -218,16 +227,6 @@ public class BuildingPlacementManager : MonoBehaviour
             }
         }
         AudioManager.Instance.UISound(AudioManager.UIType.PopUp);
-    }
-
-    public void RemoveBuilding(PlacedBuildingBase buildingToRemove)
-    {
-        //buildingToRemove.gameObject.SetActive(false);
-        StartCoroutine(buildingToRemove.Destruction());
-        _buildingsPools[buildingToRemove._buildingData.KindOfStructure].Release(buildingToRemove);
-        _localPlayerBuildingManager.RemoveBuilding(buildingToRemove);
-        _explosionParticles.transform.position = buildingToRemove.transform.position;
-        _explosionParticles.Play();
     }
 
     internal void SetLocalBuildingManager(PlayerBuildingsManager playerBuildingsManager)

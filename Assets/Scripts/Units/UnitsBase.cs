@@ -22,7 +22,7 @@ public class UnitsBase : MonoBehaviour //Base class for units. It tracks current
 
     private void Start()
     {
-        _cellUnit.SetData(this, AnimMovement, AnimIdle);
+        _cellUnit.SetData(this, AnimMovement, AnimIdle, CalculateDamage);
     }
 
     private void Update()

@@ -64,7 +64,7 @@ public class PlacedBuildingBase : MonoBehaviour
     {
         _currentHP -= damageTaken;
         _buildingSliderHp.value = ConvertAndClampHP();
-        Debug.Log(ConvertAndClampHP());
+        //Debug.Log(ConvertAndClampHP());
     }
 
     private float ConvertAndClampHP()

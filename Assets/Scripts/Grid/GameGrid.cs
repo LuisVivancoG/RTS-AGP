@@ -33,7 +33,7 @@ public class GameGrid //GameGrid is in charge of drawing the grid and make opera
         GenerateGrid();
         _pathfinder = new Pathfinder(this, _grid);
 
-        Debug.Log("Grid initialized");
+        //Debug.Log("Grid initialized");
     }
 
     private void GenerateGrid()
@@ -54,7 +54,7 @@ public class GameGrid //GameGrid is in charge of drawing the grid and make opera
                 var cellId = new Vector2Int(i, j);
 
                 _grid.Add(cellId, new GridCell(this));
-                _grid[cellId].CellInGridPos(cellId);
+                //_grid[cellId].CellInGridPos(cellId);
                 //Debug.Log(cellId);
             }
             posX += size;
@@ -85,7 +85,7 @@ public class GameGrid //GameGrid is in charge of drawing the grid and make opera
             _grid.Add(cellId, new GridCell(this));
         }
         _grid[cellId].AddUnitToCell(unit);
-        Debug.Log($"Cell {cellId} in grid. Adding {unit.name} to the cell");
+        //Debug.Log($"Cell {cellId} in grid. Adding {unit.name} to the cell");
     }
 
     public Vector3 GetCellWorldCenter(Vector3 location)
@@ -223,7 +223,7 @@ public class GameGrid //GameGrid is in charge of drawing the grid and make opera
         return closestEnemyBuilding;
     }
 
-    /*public void OnUpdate()
+    public void OnUpdate()
     {
         _cellTickTimer += Time.deltaTime;
 
@@ -240,7 +240,7 @@ public class GameGrid //GameGrid is in charge of drawing the grid and make opera
         {
             grid.OnTick();
         }
-    }*/
+    }
 
     private GridCell GetCellAtPosition(Vector3 position)
     {

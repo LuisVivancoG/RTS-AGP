@@ -865,6 +865,8 @@ MonoBehaviour:
     type: 3}
   _pauseOptionsPrefab: {fileID: 6583260126369744619, guid: 48ca7ced889de244d89ca4f086e2e5b3,
     type: 3}
+  _defeatPrefab: {fileID: 6624198853430817048, guid: cdd05ec2199759a4a91faec69d1bbd79,
+    type: 3}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -8738,6 +8740,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: FX-birds
       objectReference: {fileID: 0}
+    - target: {fileID: 4221106466525568376, guid: 8b295d866d7a36d4a8033d84126dd221,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9486,6 +9493,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5300902841441937442, guid: 8fcb1aed58be9ac4abee46d7ce6e0af6,
+        type: 3}
+      propertyPath: _uiManager
+      value: 
+      objectReference: {fileID: 400100236}
     - target: {fileID: 5762245276839714538, guid: 8fcb1aed58be9ac4abee46d7ce6e0af6,
         type: 3}
       propertyPath: m_Name
@@ -9561,6 +9573,11 @@ PrefabInstance:
       propertyPath: _poolsParent
       value: 
       objectReference: {fileID: 850575538}
+    - target: {fileID: 7166550029776894295, guid: 8fcb1aed58be9ac4abee46d7ce6e0af6,
+        type: 3}
+      propertyPath: _defeatSound
+      value: 
+      objectReference: {fileID: 8300000, guid: fe34486fcfb6229448efc56fb7b263eb, type: 3}
     - target: {fileID: 8958583326444693039, guid: 8fcb1aed58be9ac4abee46d7ce6e0af6,
         type: 3}
       propertyPath: _ghostsGrp

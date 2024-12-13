@@ -8,6 +8,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private BuildingOptions _buildingOptionsPrefab;
     [SerializeField] private ArmyCampOptions _armyCampOptionsPrefab;
     [SerializeField] private PauseMenu _pauseOptionsPrefab;
+    [SerializeField] private DefeatDialog _defeatPrefab;
 
     Dictionary<RTSMenus, DialogBase> _dialogInstances = new();
 
@@ -40,6 +41,9 @@ public class UIManager : MonoBehaviour
                     break;
                 case RTSMenus.PauseMenu:
                     created = CreateDialogFromPrefab(_pauseOptionsPrefab);
+                    break;
+                case RTSMenus.DefeatScree:
+                    created = CreateDialogFromPrefab(_defeatPrefab);
                     break;
             }
             if (created == null)

@@ -17,8 +17,6 @@ public class GridCell //Helps to track information per cell on the grid. The one
 
     private GameGrid _parentGrid;
 
-    private Vector2 _position;
-
     private int _netHpChangePerTick;
 
     public GridCell(GameGrid grid)
@@ -26,11 +24,11 @@ public class GridCell //Helps to track information per cell on the grid. The one
         _parentGrid = grid;
     }
 
-    public void CellInGridPos(Vector2 pos)
+    /*public void CellInGridPos(Vector2 pos)
     {
         _position = pos;
         //Debug.Log(_position);
-    }
+    }*/
 
     public void AddUnitToCell(CellUnit unit)
     {
@@ -71,7 +69,7 @@ public class GridCell //Helps to track information per cell on the grid. The one
         return factionLists.SelectMany(x => x.Values).ToList();
     }
 
-    /*public void OnTick()
+    public void OnTick()
     {
         // option 1: DamageSystem.DoDamage(source, targets)
 
@@ -80,7 +78,7 @@ public class GridCell //Helps to track information per cell on the grid. The one
         {
             _parentGrid.Manager.DamageSystem.ChangeHp(this, unit, _netHpChangePerTick);
         }
-    }*/
+    }
 
     public void ModifyHpChangePerTickInCell(int change)
     {
@@ -92,8 +90,19 @@ public class GridCell //Helps to track information per cell on the grid. The one
         _buildingInCell = buildingInCell;
         _isWalkable = false;
         _obstacleLevel = buildingInCell._buildingData.ObstacleLevel;
-        
-        _parentGrid.Pathfinder.UpdateCellAfterbuildingPlaced(_position, _isWalkable, _obstacleLevel);
+
+        var pos = _parentGrid.CellIdFromPosition(buildingInCell.transform.position);
+        _parentGrid.Pathfinder.UpdateCellBuildingData(pos, _isWalkable, _obstacleLevel);
+    }
+
+    public void RemoveBuildingFromCell(PlacedBuildingBase buildingFromCell)
+    {
+        _buildingInCell = null;
+        _isWalkable = true;
+        _obstacleLevel = 0;
+
+        var pos = _parentGrid.CellIdFromPosition(buildingFromCell.transform.position);
+        _parentGrid.Pathfinder.UpdateCellBuildingData(pos, _isWalkable, _obstacleLevel);
     }
 
     public PlacedBuildingBase GetCurrentBuilding()
