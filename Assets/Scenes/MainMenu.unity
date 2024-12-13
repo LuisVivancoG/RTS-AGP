@@ -835,6 +835,16 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5300902841441937442, guid: 8fcb1aed58be9ac4abee46d7ce6e0af6,
+        type: 3}
+      propertyPath: _unitsManager
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5300902841441937442, guid: 8fcb1aed58be9ac4abee46d7ce6e0af6,
+        type: 3}
+      propertyPath: _placementManager
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 5762245276839714538, guid: 8fcb1aed58be9ac4abee46d7ce6e0af6,
         type: 3}
       propertyPath: m_Name
@@ -900,12 +910,20 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7166550029776894295, guid: 8fcb1aed58be9ac4abee46d7ce6e0af6,
+        type: 3}
+      propertyPath: _defeatSound
+      value: 
+      objectReference: {fileID: 8300000, guid: fe34486fcfb6229448efc56fb7b263eb, type: 3}
     - target: {fileID: 8958583326444693039, guid: 8fcb1aed58be9ac4abee46d7ce6e0af6,
         type: 3}
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6814234041110238135, guid: 8fcb1aed58be9ac4abee46d7ce6e0af6, type: 3}
+    - {fileID: 8958583326444693039, guid: 8fcb1aed58be9ac4abee46d7ce6e0af6, type: 3}
+    - {fileID: 5300902841441937442, guid: 8fcb1aed58be9ac4abee46d7ce6e0af6, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

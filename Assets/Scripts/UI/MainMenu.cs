@@ -18,8 +18,6 @@ public class MainMenu : MonoBehaviour
         if (!_buttonPressed)
         {
             StartCoroutine(NextLevel());
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
         }
     }
 
@@ -28,8 +26,6 @@ public class MainMenu : MonoBehaviour
         if (!_buttonPressed)
         {
             StartCoroutine(CloseGame());
-            //Cursor.lockState = CursorLockMode.Locked;
-            //Cursor.visible = false;
         }
     }
 
@@ -38,8 +34,6 @@ public class MainMenu : MonoBehaviour
         _buttonPressed = true;
         AudioManager.Instance.UISound(AudioManager.UIType.ButtonClicked);
         yield return new WaitForSeconds(1);
-        //Cursor.lockState = CursorLockMode.None;
-        //Cursor.visible = true;
         SceneManager.LoadScene(_gameLvl);
     }
 
@@ -49,7 +43,6 @@ public class MainMenu : MonoBehaviour
         AudioManager.Instance.UISound(AudioManager.UIType.ButtonClicked);
         yield return new WaitForSeconds(1);
         Debug.Log("Closing game");
-        //_buttonPressed = false;
         Application.Quit();
     }
 }
